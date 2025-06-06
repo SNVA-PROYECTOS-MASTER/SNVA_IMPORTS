@@ -1,0 +1,55 @@
+<odoo>
+    <!-- Vista Formulario -->
+    <record id="view_purchase_import_form" model="ir.ui.view">
+        <field name="name">purchase.import.form</field>
+        <field name="model">purchase.import</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Import">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="purchase_ids"/>
+                        <field name="state" readonly="1"/>
+                        <!-- <field name="document_folder_id" readonly="1" groups="base.group_no_one"/> -->
+                    </group>
+                    <footer>
+                        <!-- Confirmar: validación se hace en Python -->
+                        <button name="action_confirm"
+                                type="object"
+                                string="Confirm"
+                                class="btn-primary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Lista -->
+    <record id="view_purchase_import_list" model="ir.ui.view">
+        <field name="name">purchase.import.list</field>
+        <field name="model">purchase.import</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Imports">
+                <field name="name"/>
+                <field name="purchase_ids"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_purchase_import_root" name="Imports" sequence="10"/>
+    <menuitem id="menu_purchase_import_main" name="Purchase Imports" parent="menu_purchase_import_root"/>
+
+    <!-- Acción de ventana -->
+    <record id="action_purchase_import" model="ir.actions.act_window">
+        <field name="name">Imports</field>
+        <field name="res_model">purchase.import</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_purchase_import_action"
+        name="Imports"
+        parent="menu_purchase_import_main"
+        action="action_purchase_import"/>
+</odoo>
