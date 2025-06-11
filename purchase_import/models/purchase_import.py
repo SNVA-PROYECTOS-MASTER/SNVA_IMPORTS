@@ -9,12 +9,41 @@ class PurchaseImport(models.Model):
 
     name = fields.Char(string='Reference', readonly=True, copy=False, default='New')
     # Relación Many2many con órdenes de compra
-    purchase_ids = fields.Many2many('purchase.order', string='Purchase Orders')
+    purchase_ids = fields.Many2many('purchase.order', string='Purchase Orders',tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed')
+        ('confirmed', 'Confirmed'),
+        ('in_production', 'In Production'),
+        ('dispatched', 'Dispatched'),
+        ('at_port', 'At Port'),
+        ('in_customs', 'In Customs'),
+        ('at_zf', 'At Zona Franca'),
+        ('delivered', 'Delivered'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
-    #document_folder_id = fields.Many2one('documents.folder', string='Document Folder', readonly=True)
+    
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company, string='Company', tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Supplier/Agent', tracking=True)
+    
+    transport_type = fields.Selection([
+        ('maritime', 'Maritime'),
+        ('air', 'Air'),
+        ('land', 'Land'),
+        ('courier', 'Courier')
+    ], string="Transport Type", tracking=True)
+    
+    origin_country = fields.Char(string="Origin Country")
+    port_of_loading = fields.Char(string="Port of Loading")
+    port_of_discharge = fields.Char(string="Port of Discharge")
+    departure_date = fields.Date(string="Departure Date")
+    arrival_date = fields.Date(string="Estimated Arrival Date")
+    incoterm_id = fields.Many2one('account.incoterms', string="Incoterm")
+    #carrier_id = fields.Many2one('delivery.carrier', string="Carrier")
+
+    tracking_number = fields.Char(string="Tracking Number")
+
+    notes = fields.Text(string="Internal Notes")
 
     @api.model
     def _get_year_folder(self, year):
@@ -34,27 +63,11 @@ class PurchaseImport(models.Model):
                 record.name = self.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
             year = datetime.now().year
-            parent_folder = self._get_year_folder(year)
-
-            # subfolder = self.env['documents.folder'].create({
-            #     'name': record.name,
-            #     'parent_folder_id': parent_folder.id,
-            # })
-
-            # record.document_folder_id = subfolder.id
+            #parent_folder = self._get_year_folder(year)
             record.state = 'confirmed'
 
-    # @api.model
-    # def create(self, vals):
-    #     vals['document_folder_id'] = False  # por seguridad
-    #     return super().create(vals)
     @api.model
     def create(self, vals):
-        # Si no hay nombre asignado, generar el nombre con la secuencia
-        if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
-
-        # Asegura que document_folder_id sea None/False si no viene definido
-        # vals['document_folder_id'] = vals.get('document_folder_id') or False
-
+        vals['name'] = 'New'
         return super().create(vals)
+

@@ -5,21 +5,53 @@
         <field name="model">purchase.import</field>
         <field name="arch" type="xml">
             <form string="Purchase Import">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="purchase_ids"/>
-                        <field name="state" readonly="1"/>
-                        <!-- <field name="document_folder_id" readonly="1" groups="base.group_no_one"/> -->
-                    </group>
-                    <footer>
+                <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                         <!-- Confirmar: validación se hace en Python -->
                         <button name="action_confirm"
                                 type="object"
                                 string="Confirm"
-                                class="btn-primary"/>
-                    </footer>
+                                class="btn-primary"/> 
+                </header>
+                <sheet>
+                    
+                    <group col="2">
+                        <!-- Columna izquierda -->
+                        <group>
+                            <field name="name"/>
+                            <field name="purchase_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="tracking_number"/>
+                            <field name="notes"/>
+                        </group>
+
+                        <!-- Columna derecha: logística -->
+                        <group string="Logistics">
+                            <field name="transport_type"/>
+                            <field name="incoterm_id"/>
+                            <field name="origin_country"/>
+                            <field name="port_of_loading"/>
+                            <field name="port_of_discharge"/>
+                            <field name="departure_date" widget="date"/>
+                            <field name="arrival_date"  widget="date"/>
+                            <!-- <field name="carrier_id"/> -->
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                    
                 </sheet>
+                <chatter>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </chatter>
+                
+                
             </form>
         </field>
     </record>

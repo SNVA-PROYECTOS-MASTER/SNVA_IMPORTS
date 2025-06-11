@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: purchase_imports\n"
+"POT-Creation-Date: 2025-06-02 00:00+0000\n"
+"Language: es\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: purchase_imports
+#: model:ir.model.fields,field_description:purchase.import,name
+msgid "Reference"
+msgstr "Referencia"
+
+#: model:ir.model.fields,field_description:purchase.import,purchase_id
+msgid "Purchase Order"
+msgstr "Orden de Compra"
+
+#: model:ir.model.fields,field_description:purchase.import,state
+msgid "Status"
+msgstr "Estado"
+
+#: model:ir.model.fields,field_description:purchase.import,document_folder_id
+msgid "Document Folder"
+msgstr "Carpeta de Documentos"
+
+#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_import_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_import_tree
+#: model:ir.actions.act_window,name:SNVA_IMPORTS.action_purchase_import
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_action
+msgid "Imports"
+msgstr "Importaciones"
+
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_main
+msgid "Purchase Imports"
+msgstr "Gestión de Importaciones"
+
+#: model:ir.model,name:SNVA_IMPORTS.model_purchase_import
+msgid "Purchase Import"
+msgstr "Importación de Compra"
+
+msgid "Purchase Orders"
+msgstr "Órdenes de Compra"
+
+msgid "Imports"
+msgstr "Importaciones"
+
+#. module: purchase_imports
+#: model:ir.model.fields,field_description:purchase.import,partner_id
+msgid "Supplier/Agent"
+msgstr "Proveedor / Agente"
+
+#: model:ir.model.fields,field_description:purchase.import,company_id
+msgid "Company"
+msgstr "Compañía"
+
+#: model:ir.model.fields,field_description:purchase.import,transport_type
+msgid "Transport Type"
+msgstr "Tipo de Transporte"
+
+#: model:ir.model.fields,field_description:purchase.import,origin_country
+msgid "Origin Country"
+msgstr "País de Origen"
+
+#: model:ir.model.fields,field_description:purchase.import,port_of_loading
+msgid "Port of Loading"
+msgstr "Puerto de Embarque"
+
+#: model:ir.model.fields,field_description:purchase.import,port_of_discharge
+msgid "Port of Discharge"
+msgstr "Puerto de Descarga"
+
+#: model:ir.model.fields,field_description:purchase.import,departure_date
+msgid "Departure Date"
+msgstr "Fecha de Salida"
+
+#: model:ir.model.fields,field_description:purchase.import,arrival_date
+msgid "Estimated Arrival Date"
+msgstr "Fecha Estimada de Llegada"
+
+#: model:ir.model.fields,field_description:purchase.import,incoterm_id
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#: model:ir.model.fields,field_description:purchase.import,carrier_id
+msgid "Carrier"
+msgstr "Transportista"
+
+#: model:ir.model.fields,field_description:purchase.import,tracking_number
+msgid "Tracking Number"
+msgstr "Número de Seguimiento"
+
+#: model:ir.model.fields,field_description:purchase.import,notes
+msgid "Internal Notes"
+msgstr "Notas Internas"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_in_production
+msgid "In Production"
+msgstr "En Producción"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_dispatched
+msgid "Dispatched"
+msgstr "Despachado"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_at_port
+msgid "At Port"
+msgstr "En Puerto"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_in_customs
+msgid "In Customs"
+msgstr "En Aduana"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_at_zf
+msgid "At Zona Franca"
+msgstr "En Zona Franca"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_delivered
+msgid "Delivered"
+msgstr "Entregado"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_done
+msgid "Done"
+msgstr "Finalizado"
+
+#: model:ir.model.fields.selection,name:purchase.import,state_cancelled
+msgid "Cancelled"
+msgstr "Cancelado"
