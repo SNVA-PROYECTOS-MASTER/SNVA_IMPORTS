@@ -1,0 +1,23 @@
+<odoo>
+    <!-- Herencia para agregar pestaña de líneas como solo lectura -->
+    <record id="view_purchase_import_form_inherit_lines" model="ir.ui.view">
+        <field name="name">purchase.import.form.inherit.lines</field>
+        <field name="model">purchase.import</field>
+        <field name="inherit_id" ref="purchase_import.view_purchase_import_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Products">
+                        <field name="import_line_ids" readonly="1">
+                            <list>
+                                <field name="product_id"/>
+                                <field name="purchase_order_id"/>
+                                <field name="product_qty"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

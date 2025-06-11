@@ -1,0 +1,11 @@
+<odoo>
+    <!-- Secuencia para OCs de importación -->
+    <record id="seq_purchase_order_import" model="ir.sequence">
+        <field name="name">Purchase Order Import</field>
+        <field name="code">purchase.order.import</field>
+        <field name="prefix">PI</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="implementation">no_gap</field>
+    </record>
+</odoo>
