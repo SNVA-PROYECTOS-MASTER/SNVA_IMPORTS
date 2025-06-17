@@ -16,6 +16,20 @@
                             </list>
                         </field>
                     </page>
+                    <page string="Payments">
+                        <field name="payment_ids">
+                            <list>
+                                <field name="name"/>
+                                <field name="payment_type"/>
+                                <field name="partner_id"/>
+                                <field name="amount"/>
+                                <field name="currency_id"/>
+                                <field name="journal_id"/>
+                                <field name="state"/>
+                            </list>
+                        </field>
+                    </page>
+
                 </notebook>
             </xpath>
         </field>

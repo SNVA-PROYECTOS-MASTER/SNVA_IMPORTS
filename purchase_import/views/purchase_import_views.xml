@@ -13,6 +13,15 @@
                                 string="Confirm"
                                 class="btn-primary"/> 
                         <button name="action_open_wizard" type="object" invisible="not purchase_ids" string="Add Products" class="oe_highlight"/>
+
+                        <button name="action_view_purchase_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-shopping-cart"
+                                invisible = "purchase_ids == False">
+                            <field name="purchase_ids" widget="statinfo" string="Purchase Orders"/>
+                        </button>
+
                         
                 </header>
                 <sheet>
@@ -30,7 +39,7 @@
                         <group string="Logistics">
                             <field name="transport_type"/>
                             <field name="incoterm_id"/>
-                            <field name="origin_country"/>
+                            <field name="origin_country_id"/>
                             <field name="port_of_loading"/>
                             <field name="port_of_discharge"/>
                             <field name="departure_date" widget="date"/>

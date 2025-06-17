@@ -32,7 +32,7 @@ class PurchaseImport(models.Model):
         ('courier', 'Courier')
     ], string="Transport Type", tracking=True)
     
-    origin_country = fields.Char(string="Origin Country")
+    origin_country_id = fields.Many2one('res.country', string="Origin Country")
     port_of_loading = fields.Char(string="Port of Loading")
     port_of_discharge = fields.Char(string="Port of Discharge")
     departure_date = fields.Date(string="Departure Date")
@@ -90,5 +90,29 @@ class PurchaseImport(models.Model):
         }
         
 
+    def action_view_purchase_orders(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Purchase Orders',
+            'res_model': 'purchase.order',
+            'view_mode': 'list,form',
+            'target': 'current',
+            'domain': [('id', 'in', self.purchase_ids.ids)],
+            'context': {'default_is_importation': True}
+        }
 
+    payment_ids = fields.Many2many(
+        'account.payment',
+        compute='_compute_payment_ids',
+        string="Payments"
+    )
 
+    @api.depends('purchase_ids.invoice_ids.payment_ids')
+    def _compute_payment_ids(self):
+        for record in self:
+            payments = self.env['account.payment']
+            for po in record.purchase_ids:
+                for invoice in po.invoice_ids:
+                    payments |= invoice.payment_ids
+            record.payment_ids = payments
