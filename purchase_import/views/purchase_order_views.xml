@@ -5,8 +5,20 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='project_id']" position="after">
-                <field name="purchase_ids" widget="many2many_tags"/>
+                
+                <field name="is_importation" readonly="state != 'draft'"/>
+                <field name="purchase_ids" widget="many2many_tags" invisible="not is_importation"/>
             </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_purchase_imports"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-ship"
+                        invisible="not is_importation">
+                    <field name="purchase_ids" widget="statinfo" string="Imports"/>
+                </button>
+            </xpath>
+
         </field>
     </record>
 </odoo>

@@ -12,6 +12,8 @@
                                 type="object"
                                 string="Confirm"
                                 class="btn-primary"/> 
+                        <button name="action_open_wizard" type="object" invisible="not purchase_ids" string="Add Products" class="oe_highlight"/>
+                        
                 </header>
                 <sheet>
                     
@@ -22,7 +24,6 @@
                             <field name="purchase_ids" widget="many2many_tags"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="tracking_number"/>
-                            <field name="notes"/>
                         </group>
 
                         <!-- Columna derecha: logística -->

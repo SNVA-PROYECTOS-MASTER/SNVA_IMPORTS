@@ -9,11 +9,10 @@ class PurchaseImport(models.Model):
 
     name = fields.Char(string='Reference', readonly=True, copy=False, default='New')
     # Relación Many2many con órdenes de compra
-    purchase_ids = fields.Many2many('purchase.order', string='Purchase Orders',tracking=True)
+    purchase_ids = fields.Many2many('purchase.order', string='Purchase Orders',tracking=True, domain="['|', ('name', 'ilike', 'PI%'), ('name', 'ilike', 'PO%')]")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('in_production', 'In Production'),
         ('dispatched', 'Dispatched'),
         ('at_port', 'At Port'),
         ('in_customs', 'In Customs'),
@@ -45,6 +44,12 @@ class PurchaseImport(models.Model):
 
     notes = fields.Text(string="Internal Notes")
 
+    import_line_ids = fields.One2many(
+        'purchase.import.line',
+        'import_id',
+        string='Import Products'
+    )
+
     @api.model
     def _get_year_folder(self, year):
         # Buscar o crear carpeta "Imports/YYYY"
@@ -70,4 +75,20 @@ class PurchaseImport(models.Model):
     def create(self, vals):
         vals['name'] = 'New'
         return super().create(vals)
+    
+    def action_open_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Select Products for Import',
+            'res_model': 'purchase.import.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_import_id': self.id,
+            }
+        }
+        
+
+
 

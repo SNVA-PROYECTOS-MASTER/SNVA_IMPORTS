@@ -8,7 +8,7 @@
             <xpath expr="//sheet" position="inside">
                 <notebook>
                     <page string="Products">
-                        <field name="import_line_ids" readonly="1">
+                        <field name="import_line_ids" >
                             <list>
                                 <field name="product_id"/>
                                 <field name="purchase_order_id"/>

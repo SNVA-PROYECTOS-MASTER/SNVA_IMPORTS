@@ -16,8 +16,12 @@
     'data': [
         'security/ir.model.access.csv',
         'data/purchase_import_sequence.xml',
+        'data/purchase_order_sequence.xml',
         'views/purchase_import_views.xml',
-        'views/purchase_order_views.xml'
+        'views/purchase_order_views.xml',
+        'views/purchase_import_line_views.xml',
+        'wizards/purchase_import_wizard.xml',
+        
     ],
     
     'application': True,

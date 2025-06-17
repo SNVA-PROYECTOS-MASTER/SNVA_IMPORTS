@@ -6,14 +6,14 @@ class PurchaseImportWizardLine(models.TransientModel):
     _name = 'purchase.import.wizard.line'
     _description = 'Wizard Line for Import Products'
 
-    wizard_id = fields.Many2one('purchase.import.wizard', required=True, ondelete='cascade')
-    product_id = fields.Many2one('product.product', string='Product', required=True)
+    wizard_id = fields.Many2one('purchase.import.wizard', ondelete='cascade')
+    product_id = fields.Many2one('product.product', string='Product')
     product_qty = fields.Float(string='Quantity', required=True)
 
     
     max_qty = fields.Float(string="Max Qty", compute="_compute_max_qty")
 
-    @api.depends('product_id', 'wizard_id.purchase_order_id')
+    @api.depends('product_id')
     def _compute_max_qty(self):
         for line in self:
             po = line.wizard_id.purchase_order_id
@@ -22,6 +22,14 @@ class PurchaseImportWizardLine(models.TransientModel):
 
     @api.constrains('product_qty')
     def _check_product_qty(self):
+        errors = []
         for line in self:
-            if line.product_qty > line.max_qty:
-                raise ValidationError("No puedes importar más de la cantidad en la orden de compra (%s unidades)." % line.max_qty)
+            if line.max_qty and line.product_qty > line.max_qty:
+                errors.append(
+                    f"• {line.product_id.display_name} — máximo permitido: {line.max_qty}, ingresado: {line.product_qty}"
+                )
+        if errors:
+            raise ValidationError(
+                "Algunos productos exceden la cantidad permitida por la orden de compra:\n\n" +
+                "\n".join(errors)
+            )

@@ -6,7 +6,7 @@ class PurchaseImportWizard(models.TransientModel):
     _description = 'Wizard to Select Products for Import'
 
     import_id = fields.Many2one('purchase.import', required=True)
-    purchase_order_id = fields.Many2one('purchase.order', required=True,domain="[('id', 'in', allowed_purchase_ids)]")
+    purchase_order_id = fields.Many2one('purchase.order',domain="[('id', 'in', allowed_purchase_ids)]")
     allowed_purchase_ids = fields.Many2many(
         'purchase.order',
         compute='_compute_allowed_purchase_orders'
@@ -35,23 +35,39 @@ class PurchaseImportWizard(models.TransientModel):
 
     def action_add_products(self):
         for line in self.line_ids:
-            self.env['purchase.import.line'].create({
+            vals = {
                 'import_id': self.import_id.id,
-                'purchase_order_id': self.purchase_order_id.id,
                 'product_id': line.product_id.id,
                 'product_qty': line.product_qty
-            })
+            }
+
+            # Solo incluir OC si existe
+            if self.purchase_order_id:
+                vals['purchase_order_id'] = self.purchase_order_id.id
+
+            self.env['purchase.import.line'].create(vals)
+
             
     @api.onchange('purchase_order_id')
     def _onchange_purchase_order(self):
         if self.purchase_order_id:
-            self.line_ids = [(5, 0, 0)]  # limpia las anteriores
-            self.line_ids = [
-                (0, 0, {
-                    'product_id': line.product_id.id,
-                    'product_qty': line.product_qty,
-                })
-                for line in self.purchase_order_id.order_line
-            ]
+            existing_product_ids = {line.product_id.id for line in self.line_ids}
+            new_lines_data = []
+
+            for line in self.purchase_order_id.order_line:
+                if line.product_id.id not in existing_product_ids:
+                    new_lines_data.append({
+                        'product_id': line.product_id.id,
+                        'product_qty': line.product_qty,
+                        'wizard_id': self.id,  # requerido si quieres vínculo desde ya
+                    })
+
+            # Agrega los nuevos registros correctamente con `.new()` uno por uno
+            self.line_ids += sum(
+                [self.env['purchase.import.wizard.line'].new(data) for data in new_lines_data],
+                self.env['purchase.import.wizard.line']
+            )
+
+
 
 
