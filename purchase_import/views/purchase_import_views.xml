@@ -24,31 +24,31 @@
 
                     <button name="action_create_reception"
                             type="object"
+                            invisible = "state != 'confirm'"
                             string="Create Receipt"
                             class="oe_highlight"
                             icon="fa-truck"/>
                 </header>
 
-                <div name="button_box" class="oe_button_box">
-                    <button name="action_view_purchase_orders"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-shopping-cart"
-                            invisible="not purchase_ids">
-                        <field name="purchase_ids" widget="statinfo" string="Purchase Orders"/>
-                    </button>
-
-                    <button name="action_view_pickings"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-truck"
-                            invisible="not picking_ids">
-                        <field name="picking_ids" widget="statinfo" string="Receipts"/>
-                    </button>
-                </div>
-
                 <!-- Form body -->
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_purchase_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-shopping-cart"
+                                invisible="not purchase_ids">
+                            <field name="purchase_ids" widget="statinfo" string="Purchase Orders"/>
+                        </button>
+
+                        <button name="action_view_pickings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                invisible="not picking_ids">
+                            <field name="picking_ids" widget="statinfo" string="Receipts"/>
+                        </button>
+                    </div>
                     <group col="2">
                         <!-- Left column -->
                         <group>
@@ -68,6 +68,13 @@
                             <field name="departure_date" widget="date"/>
                             <field name="arrival_date" widget="date"/>
                             <field name="picking_type_id"/>
+                        </group>
+
+                        <group string="Shipping Details" col="2">
+                            <field name="bl_number"/>
+                            <field name="trading_contact_id"/>
+                            <field name="currency_id"/>
+                            <field name="trm_value"/>
                         </group>
                     </group>
 
@@ -107,7 +114,7 @@
 
     <!-- Menús -->
     <menuitem id="menu_purchase_import_root" name="Imports" sequence="10"   web_icon="purchase_import,static/description/icon.png"/>
-    <!-- <menuitem id="menu_purchase_import_main" name="Purchase Imports" parent="menu_purchase_import_root"/> -->
+    <menuitem id="menu_purchase_import_main" name="Purchase Imports" parent="menu_purchase_import_root"/>
 
     <!-- Acción de ventana -->
     <record id="action_purchase_import" model="ir.actions.act_window">
@@ -115,5 +122,11 @@
         <field name="res_model">purchase.import</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <menuitem id="menu_purchase_import_main"
+        name="Purchase Imports"
+        action="action_purchase_import"
+        web_icon="purchase_import,static/description/icon.png"
+        sequence="1"/>
 
 </odoo>

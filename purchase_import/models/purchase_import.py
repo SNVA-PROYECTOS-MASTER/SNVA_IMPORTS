@@ -50,6 +50,27 @@ class PurchaseImport(models.Model):
         string='Import Products'
     )
     
+    bl_number = fields.Char(string="BL Number", tracking=True)
+    #Trading - contacto
+    # Moneda de la importación
+    currency_id = fields.Many2one(
+        'res.currency',
+        string="Currency",
+        required=True,
+        default=lambda self: self.env.company.currency_id,
+        tracking=True
+    )
+
+    # TRM (valor numérico)
+    trm_value = fields.Float(string="TRM", digits='Product Price', tracking=True)
+    
+    trading_contact_id = fields.Many2one(
+        'res.partner',
+        string="Trading Contact",
+        domain="[('is_company', '=', False)]",  # opcional: solo personas
+        tracking=True
+    )
+    
     picking_ids = fields.Many2many('stock.picking', compute="_compute_picking_ids", string="Receipts")
     picking_type_id = fields.Many2one(
         'stock.picking.type',
@@ -60,24 +81,12 @@ class PurchaseImport(models.Model):
     )
 
 
-    @api.depends('purchase_ids')
+    @api.depends('import_line_ids')
     def _compute_picking_ids(self):
         for record in self:
-            pickings = self.env['stock.picking']
-            if record.purchase_ids:
-                # Usamos el enlace indirecto por los productos de la OC
-                po_line_ids = record.purchase_ids.mapped('order_line')
-                product_ids = po_line_ids.mapped('product_id')
-
-                if product_ids:
-                    related_moves = self.env['stock.move'].search([
-                        ('product_id', 'in', product_ids.ids),
-                        ('state', '!=', 'cancel'),
-                        ('picking_id', '!=', False),
-                    ])
-
-                    pickings |= related_moves.mapped('picking_id')
-
+            pickings = self.env['stock.picking'].search([
+                ('import_id', '=', record.id)
+            ])
             record.picking_ids = pickings
 
             
@@ -186,6 +195,7 @@ class PurchaseImport(models.Model):
                 'location_dest_id': picking_type.default_location_dest_id.id,
                 'origin': self.name,
                 'company_id': self.company_id.id,
+                'import_id': self.id,
             })
             created_pickings.append(picking)
 
