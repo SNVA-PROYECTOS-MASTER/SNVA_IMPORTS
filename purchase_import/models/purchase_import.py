@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import _,models, fields, api
 from odoo.exceptions import UserError
 from datetime import datetime
 
@@ -49,6 +49,48 @@ class PurchaseImport(models.Model):
         'import_id',
         string='Import Products'
     )
+    
+    picking_ids = fields.Many2many('stock.picking', compute="_compute_picking_ids", string="Receipts")
+    picking_type_id = fields.Many2one(
+        'stock.picking.type',
+        string='Receipt Operation Type',
+        domain=[('code', '=', 'incoming')],
+        required=True,
+        tracking=True
+    )
+
+
+    @api.depends('purchase_ids')
+    def _compute_picking_ids(self):
+        for record in self:
+            pickings = self.env['stock.picking']
+            if record.purchase_ids:
+                # Usamos el enlace indirecto por los productos de la OC
+                po_line_ids = record.purchase_ids.mapped('order_line')
+                product_ids = po_line_ids.mapped('product_id')
+
+                if product_ids:
+                    related_moves = self.env['stock.move'].search([
+                        ('product_id', 'in', product_ids.ids),
+                        ('state', '!=', 'cancel'),
+                        ('picking_id', '!=', False),
+                    ])
+
+                    pickings |= related_moves.mapped('picking_id')
+
+            record.picking_ids = pickings
+
+            
+    def action_view_pickings(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Recepciones',
+            'res_model': 'stock.picking',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', self.picking_ids.ids)],
+            'context': {'default_import_id': self.id}
+        }
 
     @api.model
     def _get_year_folder(self, year):
@@ -116,3 +158,56 @@ class PurchaseImport(models.Model):
                 for invoice in po.invoice_ids:
                     payments |= invoice.payment_ids
             record.payment_ids = payments
+    
+    def action_create_reception(self):
+        self.ensure_one()
+
+        Picking = self.env['stock.picking']
+        StockMove = self.env['stock.move']
+        created_pickings = []
+
+        for line in self.import_line_ids:
+            if not line.product_id or not line.product_qty:
+                continue
+
+            partner = self.partner_id or (line.purchase_order_id and line.purchase_order_id.partner_id)
+            if not partner:
+                raise UserError(_("No partner defined for this reception."))
+
+            # Usa el picking type predeterminado del usuario, o define uno por defecto en el modelo si aplica
+            picking_type = self.env.ref('stock.picking_type_in', raise_if_not_found=False)
+            if not picking_type:
+                raise UserError(_("No default incoming picking type found."))
+
+            picking = Picking.create({
+                'partner_id': partner.id,
+                'picking_type_id': picking_type.id,
+                'location_id': picking_type.default_location_src_id.id,
+                'location_dest_id': picking_type.default_location_dest_id.id,
+                'origin': self.name,
+                'company_id': self.company_id.id,
+            })
+            created_pickings.append(picking)
+
+            StockMove.create({
+                'name': line.product_id.display_name,
+                'product_id': line.product_id.id,
+                'product_uom_qty': line.product_qty,
+                'product_uom': line.product_id.uom_id.id,
+                'location_id': picking.location_id.id,
+                'location_dest_id': picking.location_dest_id.id,
+                'picking_id': picking.id,
+                'company_id': self.company_id.id,
+            })
+
+        if not created_pickings:
+            raise UserError(_("No valid lines to create receptions."))
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Receipts',
+            'res_model': 'stock.picking',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', [p.id for p in created_pickings])],
+        }
+

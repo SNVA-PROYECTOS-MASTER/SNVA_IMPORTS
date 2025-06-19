@@ -6,8 +6,8 @@
     'license': 'LGPL-3',
     'author': 'Sinova',
     'website': 'https://www.sinova.co/',
-    'version': '18.0.0.0',
-    'category': 'Accounting',
+    'version': '18.0.0.1',
+    'category': 'summary',
     'depends': ['base', 'purchase', 'stock', 'account','documents'],
     
     'external_dependencies': {

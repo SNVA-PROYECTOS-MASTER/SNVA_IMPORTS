@@ -26,18 +26,28 @@ class PurchaseOrder(models.Model):
 
     def button_confirm(self):
         for order in self:
-            if order.is_importation and (order.name == '/' or order.name == 'New'):
-                transport_type = order.transport_type or 'default'
-                sequence_code = f'purchase.order.import.{transport_type}'
-                sequence = self.env['ir.sequence'].search([('code', '=', sequence_code)], limit=1)
-                if not sequence:
-                    sequence_code = 'purchase.order.import'
-                # Asignar secuencia ANTES de llamar a super
-                next_number = self.env['ir.sequence'].next_by_code(sequence_code)
-                if not next_number:
-                    raise UserError("No se pudo generar el número de secuencia.")
-                order.name = next_number
-        return super().button_confirm()
+            if order.is_importation:
+                if order.name in ['/', 'New']:
+                    transport_type = order.transport_type or 'default'
+                    sequence_code = f'purchase.order.import.{transport_type}'
+                    sequence = self.env['ir.sequence'].search([('code', '=', sequence_code)], limit=1)
+                    if not sequence:
+                        sequence_code = 'purchase.order.import'
+                    next_number = self.env['ir.sequence'].next_by_code(sequence_code)
+                    if not next_number:
+                        raise UserError("No se pudo generar el número de secuencia.")
+                    order.name = next_number
+
+        # Llamar a super() una sola vez después del loop
+        res = super().button_confirm()
+
+        # Cancelar recepciones automáticas si es importación
+        for order in self.filtered(lambda o: o.is_importation):
+            pickings = order.picking_ids.filtered(lambda p: p.state in ['draft', 'waiting', 'confirmed'])
+            pickings.action_cancel()
+
+        return res
+
 
 
     def write(self, vals):
@@ -58,3 +68,6 @@ class PurchaseOrder(models.Model):
             'domain': [('id', 'in', self.purchase_ids.ids)],
             'context': {'default_purchase_ids': self.id},
         }
+        
+    
+

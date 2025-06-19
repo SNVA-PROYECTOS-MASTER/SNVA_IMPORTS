@@ -9,6 +9,7 @@ class PurchaseImportWizardLine(models.TransientModel):
     wizard_id = fields.Many2one('purchase.import.wizard', ondelete='cascade')
     product_id = fields.Many2one('product.product', string='Product')
     product_qty = fields.Float(string='Quantity', required=True)
+    qty_received = fields.Float(string="Received" )
 
     
     max_qty = fields.Float(string="Max Qty", compute="_compute_max_qty")
