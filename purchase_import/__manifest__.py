@@ -8,7 +8,7 @@
     'website': 'https://www.sinova.co/',
     'version': '18.0.0.1',
     'category': 'summary',
-    'depends': ['base', 'purchase', 'stock', 'account','documents'],
+    'depends': ['base', 'purchase', 'stock', 'account','documents','project'],
     
     'external_dependencies': {
     },
