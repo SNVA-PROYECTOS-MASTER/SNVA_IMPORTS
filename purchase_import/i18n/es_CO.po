@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: purchase_imports\n"
+"Project-Id-Version: purchase_importss\n"
 "POT-Creation-Date: 2025-06-02 00:00+0000\n"
 "Language: es\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. module: purchase_imports
+#. module: purchase_importss
 #: model:ir.model.fields,field_description:purchase.import,name
 msgid "Reference"
 msgstr "Referencia"
@@ -23,21 +23,21 @@ msgstr "Estado"
 msgid "Document Folder"
 msgstr "Carpeta de Documentos"
 
-#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_import_form
+#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_imports_form
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_import_tree
-#: model:ir.actions.act_window,name:SNVA_IMPORTS.action_purchase_import
-#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_action
+#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_imports_tree
+#: model:ir.actions.act_window,name:SNVA_IMPORTS.action_purchase_imports
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_imports_action
 msgid "Imports"
 msgstr "Importaciones"
 
-#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_main
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_imports_main
 msgid "Purchase Imports"
 msgstr "Gestión de Importaciones"
 
-#: model:ir.model,name:SNVA_IMPORTS.model_purchase_import
+#: model:ir.model,name:SNVA_IMPORTS.model_purchase_imports
 msgid "Purchase Import"
 msgstr "Importación de Compra"
 
@@ -47,7 +47,7 @@ msgstr "Órdenes de Compra"
 msgid "Imports"
 msgstr "Importaciones"
 
-#. module: purchase_imports
+#. module: purchase_importss
 #: model:ir.model.fields,field_description:purchase.import,partner_id
 msgid "Supplier/Agent"
 msgstr "Proveedor / Agente"
