@@ -1,0 +1,557 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#     * purchase_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-20 00:00+0000\n"
+"PO-Revision-Date: 2025-06-20 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,name
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,purchase_ids
+msgid "Purchase Orders"
+msgstr "Órdenes de Compra"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,state
+msgid "Status"
+msgstr "Estado"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,partner_id
+msgid "Supplier/Agent"
+msgstr "Proveedor / Agente"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,transport_type
+msgid "Transport Type"
+msgstr "Tipo de Transporte"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,origin_country_id
+msgid "Origin Country"
+msgstr "País de Origen"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,port_of_loading
+msgid "Port of Loading"
+msgstr "Puerto de Embarque"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,port_of_discharge
+msgid "Port of Discharge"
+msgstr "Puerto de Descarga"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,departure_date
+msgid "Departure Date"
+msgstr "Fecha de Salida"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,arrival_date
+msgid "Estimated Arrival Date"
+msgstr "Fecha Estimada de Llegada"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,incoterm_id
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,carrier_id
+msgid "Carrier"
+msgstr "Transportista"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,tracking_number
+msgid "Tracking Number"
+msgstr "Número de Seguimiento"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,notes
+msgid "Internal Notes"
+msgstr "Notas Internas"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,bl_number
+msgid "BL Number"
+msgstr "Número BL"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,trm_value
+msgid "TRM"
+msgstr "TRM"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,trading_contact_id
+msgid "Trading Contact"
+msgstr "Contacto Comercial"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,picking_ids
+msgid "Receipts"
+msgstr "Recepciones"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,picking_type_id
+msgid "Receipt Operation Type"
+msgstr "Tipo de Operación de Recepción"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase.import,import_line_ids
+msgid "Import Products"
+msgstr "Productos de Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_draft
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_confirmed
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_dispatched
+msgid "Dispatched"
+msgstr "Despachado"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_at_port
+msgid "At Port"
+msgstr "En Puerto"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_in_customs
+msgid "In Customs"
+msgstr "En Aduana"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_at_zf
+msgid "At Zona Franca"
+msgstr "En Zona Franca"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_delivered
+msgid "Delivered"
+msgstr "Entregado"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_done
+msgid "Done"
+msgstr "Finalizado"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase.import,state_cancelled
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_import
+msgid "Purchase Import"
+msgstr "Importación de Compra"
+
+#. module: purchase_import
+#: model:ir.actions.act_window,name:SNVA_IMPORTS.action_purchase_import
+msgid "Imports"
+msgstr "Importaciones"
+
+#. module: purchase_import
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_action
+msgid "Imports"
+msgstr "Importaciones"
+
+#. module: purchase_import
+#: model:ir.ui.menu,name:SNVA_IMPORTS.menu_purchase_import_main
+msgid "Purchase Imports"
+msgstr "Gestión de Importaciones"
+
+#. module: purchase_import
+#: model:ir.ui.view,arch_db:SNVA_IMPORTS.view_purchase_import_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__import_id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__import_id
+msgid "Import"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__import_line_ids
+msgid "Import Products"
+msgstr "Productos de importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_stock_picking__import_id
+msgid "Importación"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.actions.act_window,name:purchase_import.action_purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_order__purchase_ids
+#: model:ir.ui.menu,name:purchase_import.menu_purchase_import_root
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_order_form_inherit_imports
+msgid "Imports"
+msgstr "Importaciones"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__in_customs
+msgid "In Customs"
+msgstr "En Aduana"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__incoterm_id
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__notes
+msgid "Internal Notes"
+msgstr "Notas internas"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_order__is_importation
+msgid "Is Importation"
+msgstr "Es importación"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__transport_type__land
+#: model:ir.model.fields.selection,name:purchase_import.selection__purchase_order__transport_type__land
+msgid "Land"
+msgstr "Terrestre"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__write_uid
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__write_uid
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__write_uid
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__write_date
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__write_date
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__write_date
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Logistics"
+msgstr "Logística"
+
+#. module: purchase_import
+#: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__transport_type__maritime
+#: model:ir.model.fields.selection,name:purchase_import.selection__purchase_order__transport_type__maritime
+msgid "Maritime"
+msgstr "Marítimo"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__max_qty
+msgid "Max Qty"
+msgstr "Cantidad máxima"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_has_error
+msgid "Message Delivery error"
+msgstr "Error en entrega de mensaje"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Fecha límite de mi actividad"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Próximo evento en calendario de actividades"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Fecha límite de próxima actividad"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de próxima actividad"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de próxima actividad"
+
+
+#. module: purchase_import
+#. odoo-python
+#: code:addons/purchase_import/models/purchase_import.py:0
+msgid "No default incoming picking type found."
+msgstr "No se encontró un tipo de recepción predeterminado."
+
+#. module: purchase_import
+#. odoo-python
+#: code:addons/purchase_import/models/purchase_import.py:0
+msgid "No partner defined for this reception."
+msgstr "No se definió un proveedor para esta recepción."
+
+#. module: purchase_import
+#. odoo-python
+#: code:addons/purchase_import/models/purchase_import.py:0
+msgid "No valid lines to create receptions."
+msgstr "No hay líneas válidas para crear recepciones."
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: purchase_import
+#: model:ir.model.fields,help:purchase_import.field_purchase_import__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensajes que requieren acción"
+
+#. module: purchase_import
+#: model:ir.model.fields,help:purchase_import.field_purchase_import__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__origin_country_id
+msgid "Origin Country"
+msgstr "País de origen"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__payment_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
+msgid "Payments"
+msgstr "Pagos"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__port_of_discharge
+msgid "Port of Discharge"
+msgstr "Puerto de descarga"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__port_of_loading
+msgid "Port of Loading"
+msgstr "Puerto de embarque"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__product_id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__line_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
+msgid "Products"
+msgstr "Productos"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Purchase Import"
+msgstr "Importación de compra"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_import_line
+msgid "Purchase Import Line"
+msgstr "Línea de importación"
+
+#. module: purchase_import
+#: model:ir.ui.menu,name:purchase_import.menu_purchase_import_main
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_list
+msgid "Purchase Imports"
+msgstr "Importaciones de compra"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_order
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__purchase_order_id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__purchase_order_id
+msgid "Purchase Order"
+msgstr "Orden de compra"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__purchase_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Purchase Orders"
+msgstr "Órdenes de compra"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__product_qty
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__product_qty
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__rating_ids
+msgid "Ratings"
+msgstr "Calificaciones"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__picking_type_id
+msgid "Receipt Operation Type"
+msgstr "Tipo de operación de recepción"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__picking_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Receipts"
+msgstr "Recepciones"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__qty_received
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__qty_received
+msgid "Received"
+msgstr "Recibido"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__name
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega por SMS"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
+msgid "Select Products for Import"
+msgstr "Seleccionar productos para importar"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Shipping Details"
+msgstr "Detalles del envío"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__state
+msgid "Status"
+msgstr "Estado"
+
+#. module: purchase_import
+#: model:ir.model.fields,help:purchase_import.field_purchase_import__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Estado basado en actividades\n"
+"Vencido: La fecha límite ya pasó\n"
+"Hoy: La actividad está programada para hoy\n"
+"Planificado: Actividades futuras."
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__partner_id
+msgid "Supplier/Agent"
+msgstr "Proveedor / Agente"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trm_value
+msgid "TRM"
+msgstr "TRM"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__tracking_number
+msgid "Tracking Number"
+msgstr "Número de seguimiento"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trading_contact_id
+msgid "Trading Contact"
+msgstr "Contacto comercial"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_stock_picking
+msgid "Transfer"
+msgstr "Transferencia"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__transport_type
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_order__transport_type
+msgid "Transport Type"
+msgstr "Tipo de transporte"
+
+#. module: purchase_import
+#: model:ir.model.fields,help:purchase_import.field_purchase_import__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de actividad de excepción registrada."
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__price_unit
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: purchase_import
+#: model:ir.model.fields,help:purchase_import.field_purchase_import__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__wizard_id
+msgid "Wizard"
+msgstr "Asistente"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_import_wizard_line
+msgid "Wizard Line for Import Products"
+msgstr "Línea del asistente para productos de importación"
+
+#. module: purchase_import
+#: model:ir.model,name:purchase_import.model_purchase_import_wizard
+msgid "Wizard to Select Products for Import"
+msgstr "Asistente para seleccionar productos a importar"
