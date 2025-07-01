@@ -5,6 +5,7 @@
         <field name="model">purchase.import.wizard</field>
         <field name="arch" type="xml">
             <form string="Select Products for Import">
+                <field name="allowed_purchase_ids" invisible="1"/>     
                 <group>
                     <field name="import_id" readonly="1"/>
                     <field name="purchase_order_id"/>

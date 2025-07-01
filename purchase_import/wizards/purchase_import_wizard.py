@@ -34,14 +34,19 @@ class PurchaseImportWizard(models.TransientModel):
         return res
 
     def action_add_products(self):
+        self.ensure_one()
+
         for line in self.line_ids:
+            # Ignorar líneas incompletas
+            if not line.product_id or not line.product_qty:
+                continue
+
             vals = {
                 'import_id': self.import_id.id,
                 'product_id': line.product_id.id,
-                'product_qty': line.product_qty
+                'product_qty': line.product_qty,
             }
 
-            # Solo incluir OC si existe
             if self.purchase_order_id:
                 vals['purchase_order_id'] = self.purchase_order_id.id
 

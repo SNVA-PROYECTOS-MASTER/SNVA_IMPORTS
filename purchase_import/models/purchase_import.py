@@ -85,6 +85,15 @@ class PurchaseImport(models.Model):
         tracking=True
     )
     
+    @api.onchange('purchase_ids')
+    def _onchange_purchase_ids_set_trading_contact(self):
+        for record in self:
+            if record.purchase_ids:
+                # Tomar el proveedor de la primera OC vinculada
+                first_po = record.purchase_ids[0]
+                record.trading_contact_id = first_po.partner_id or False
+            else:
+                record.trading_contact_id = False
     
     def _get_document_list(self):
         

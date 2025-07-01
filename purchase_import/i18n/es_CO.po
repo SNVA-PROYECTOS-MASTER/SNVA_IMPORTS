@@ -559,7 +559,7 @@ msgstr "Número de seguimiento"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trading_contact_id
 msgid "Trading Contact"
-msgstr "Contacto comercial"
+msgstr "Proveedor"
 
 #. module: purchase_import
 #: model:ir.model,name:purchase_import.model_stock_picking
