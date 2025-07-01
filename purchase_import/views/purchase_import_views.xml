@@ -22,13 +22,6 @@
                             string="Add Products"
                             class="oe_highlight"
                             invisible="purchase_ids == False "/>
-
-                    <button name="action_create_reception"
-                            type="object"
-                            invisible = "state != 'confirmed'"
-                            string="Create Receipt"
-                            class="oe_highlight"
-                            icon="fa-truck"/>
                 </header>
 
                 <!-- Form body -->
@@ -49,6 +42,15 @@
                                 invisible="not picking_ids">
                             <field name="picking_ids" widget="statinfo" string="Receipts"/>
                         </button>
+
+                        <button name="action_open_documents"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-folder-open"
+                                invisible = "state != 'confirmed'">
+                            <field name="document_folder_id" widget="statinfo" string="Documentos"/>
+                        </button>
+
                     </div>
                     <group col="2">
                         <!-- Left column -->
@@ -61,6 +63,8 @@
 
                         <!-- Right column: logistics -->
                         <group string="Logistics">
+                            <field name="bl_number"/>
+                            <field name="trading_contact_id"/>
                             <field name="transport_type"/>
                             <field name="incoterm_id"/>
                             <field name="origin_country_id"/>
@@ -72,8 +76,6 @@
                         </group>
 
                         <group string="Shipping Details" col="2">
-                            <field name="bl_number"/>
-                            <field name="trading_contact_id"/>
                             <field name="currency_id"/>
                             <field name="trm_value"/>
                         </group>

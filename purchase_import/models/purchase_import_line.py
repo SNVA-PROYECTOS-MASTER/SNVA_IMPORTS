@@ -12,6 +12,7 @@ class PurchaseImportLine(models.Model):
     price_unit = fields.Float(string='Unit Price')
     currency_id = fields.Many2one('res.currency', string="Currency", compute="_compute_currency", store=True)
     qty_received = fields.Float(string="Received" )
+    
 
     @api.depends('purchase_order_id.currency_id')
     def _compute_currency(self):

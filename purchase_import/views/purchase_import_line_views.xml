@@ -33,6 +33,34 @@
 
                 </notebook>
             </xpath>
+
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Documentos" invisible = "state != 'confirmed'">
+                    <group>
+                        <field name="document_folder_id" readonly="1"/>
+                    </group>
+
+
+                    <field name="document_list">
+                        <kanban>
+                            <field name="name"/>
+                            <field name="thumbnail"/>
+                            <templates>
+                                <t t-name="card" class="flex-row">
+                                    <aside class="o_kanban_aside_full">
+                                        <field name="thumbnail" class="o_kanban_image_fill w-100" widget="image" options="{'img_class': 'object-fit-cover'}" alt="Contact image"/>
+                                    </aside>
+                                    <main>
+                                        <field name="name"/>
+                                    </main>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                    
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>

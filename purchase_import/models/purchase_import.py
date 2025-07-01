@@ -6,7 +6,17 @@ class PurchaseImport(models.Model):
     _name = 'purchase.import'
     _description = 'Purchase Import'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-
+    
+    document_folder_id = fields.Many2one(
+        'documents.document',
+        string='Document Folder',
+        readonly=True,
+        domain="[('id', '!=', False)]"
+    )
+    
+    document_list = fields.One2many('documents.document',compute="_compute_document_list")
+    
+    
     name = fields.Char(string='Reference', readonly=True, copy=False, default='New')
     # Relación Many2many con órdenes de compra
     purchase_ids = fields.Many2many('purchase.order', string='Purchase Orders',tracking=True, domain="['|', ('name', 'ilike', 'PI%'), ('name', 'ilike', 'PO%')]")
@@ -64,12 +74,7 @@ class PurchaseImport(models.Model):
     # TRM (valor numérico)
     trm_value = fields.Float(string="TRM", digits='Product Price', tracking=True)
     
-    trading_contact_id = fields.Many2one(
-        'res.partner',
-        string="Trading Contact",
-        domain="[('is_company', '=', False)]",  # opcional: solo personas
-        tracking=True
-    )
+    trading_contact_id = fields.Many2one('res.partner', string="Trading Contact", domain="[('is_company', '=', False)]", tracking=True)
     
     picking_ids = fields.Many2many('stock.picking', compute="_compute_picking_ids", string="Receipts")
     picking_type_id = fields.Many2one(
@@ -79,6 +84,35 @@ class PurchaseImport(models.Model):
         required=True,
         tracking=True
     )
+    
+    
+    def _get_document_list(self):
+        
+        folder_id  = self.document_folder_id
+        documents = False
+        if folder_id:
+            documents = self.env['documents.document'].search([
+                ('folder_id', '=' ,folder_id.id)
+            ])
+        return documents
+        
+    
+    def _compute_document_list(self):
+        for record in self:
+            record.document_list = record._get_document_list()
+            
+        
+    def action_open_documents(self):
+        self.ensure_one()
+        return {
+            'name': 'Documentos',
+            'type': 'ir.actions.act_window',
+            'res_model': 'documents.document',
+            'view_mode': 'kanban,list,form',
+            'domain': [
+                ('id', 'in', self._get_document_list().ids)
+            ]
+        }
 
 
     @api.depends('import_line_ids')
@@ -105,9 +139,9 @@ class PurchaseImport(models.Model):
     def _get_year_folder(self, year):
         # Buscar o crear carpeta "Imports/YYYY"
         folder_name = f'Imports/{year}'
-        folder = self.env['documents.folder'].search([('name', '=', folder_name)], limit=1)
+        folder = self.env['documents.document'].search([('name', '=', folder_name)], limit=1)
         if not folder:
-            folder = self.env['documents.folder'].create({'name': folder_name})
+            folder = self.env['documents.document'].create({'name': folder_name})
         return folder
 
     def action_confirm(self):
@@ -118,9 +152,43 @@ class PurchaseImport(models.Model):
             if record.name == 'New':
                 record.name = self.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
-            year = datetime.now().year
-            #parent_folder = self._get_year_folder(year)
+            year = str(datetime.now().year)
+            folder_name = f"Importaciones - {year}"
+
+            # Buscar o crear carpeta principal
+            parent_folder = self.env['documents.document'].search([
+                ('name', '=', folder_name),
+                ('folder_id', '=', False)
+            ], limit=1)
+            if not parent_folder:
+                parent_folder = self.env['documents.document'].create({
+                    'name': folder_name,
+                    'company_id': record.company_id.id,
+                    'type': 'folder'
+                })
+
+            # Buscar o crear subcarpeta para la importación
+            subfolder = self.env['documents.document'].search([
+                ('name', '=', record.name),
+                ('folder_id', '=', parent_folder.id)
+            ], limit=1)
+            if not subfolder:
+                subfolder = self.env['documents.document'].create({
+                    'name': record.name,
+                    'folder_id': parent_folder.id,
+                    'company_id': record.company_id.id,
+                    'type': 'folder'
+                })
+
+            if not subfolder:
+                raise UserError("No se pudo crear la subcarpeta de documentos.")
+
+            # Asignar carpeta primero
+            record.document_folder_id = subfolder.id
+
+            # Luego actualizar estado
             record.state = 'confirmed'
+
 
     @api.model
     def create(self, vals):
@@ -221,3 +289,13 @@ class PurchaseImport(models.Model):
             'domain': [('id', 'in', [p.id for p in created_pickings])],
         }
 
+    def action_open_document_folder(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Documentos',
+            'res_model': 'documents.document',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('folder_id', '=', self.document_folder_id.id)],
+            'context': {'default_folder_id': self.document_folder_id.id},
+        }
