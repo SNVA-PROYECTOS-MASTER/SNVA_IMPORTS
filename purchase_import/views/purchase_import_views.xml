@@ -39,7 +39,7 @@
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-truck"
-                                invisible="state == 'confirmed'">
+                                invisible="">
                             <field name="picking_ids" widget="statinfo" string="Receipts"/>
                         </button>
 
