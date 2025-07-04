@@ -1,5 +1,5 @@
 from odoo import _,models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
 
 class PurchaseImport(models.Model):
@@ -77,6 +77,7 @@ class PurchaseImport(models.Model):
     trading_contact_id = fields.Many2one('res.partner', string="Trading Contact", domain="[('is_company', '=', False)]", tracking=True)
     
     picking_ids = fields.Many2many('stock.picking', compute="_compute_picking_ids", string="Receipts")
+    
     picking_type_id = fields.Many2one(
         'stock.picking.type',
         string='Receipt Operation Type',
@@ -85,6 +86,13 @@ class PurchaseImport(models.Model):
         tracking=True
     )
     
+    @api.constrains('purchase_ids')
+    def _check_unique_supplier(self):
+        for record in self:
+            supplier_ids = record.purchase_ids.mapped('partner_id.id')
+            if supplier_ids and len(set(supplier_ids)) > 1:
+                raise ValidationError("Todas las órdenes de compra deben tener el mismo proveedor para una importación.")
+        
     @api.onchange('purchase_ids')
     def _onchange_purchase_ids_set_trading_contact(self):
         for record in self:
@@ -110,20 +118,6 @@ class PurchaseImport(models.Model):
         for record in self:
             record.document_list = record._get_document_list()
             
-        
-    def action_open_documents(self):
-        self.ensure_one()
-        return {
-            'name': 'Documentos',
-            'type': 'ir.actions.act_window',
-            'res_model': 'documents.document',
-            'view_mode': 'kanban,list,form',
-            'domain': [
-                ('id', 'in', self._get_document_list().ids)
-            ]
-        }
-
-
     @api.depends('import_line_ids')
     def _compute_picking_ids(self):
         for record in self:
@@ -158,31 +152,35 @@ class PurchaseImport(models.Model):
             if record.state != 'draft':
                 raise UserError("Only draft imports can be confirmed.")
 
+            # Validación necesaria
+            if not record.import_line_ids:
+                raise UserError("Debe agregar al menos un producto antes de confirmar la importación.")
+
             if record.name == 'New':
-                record.name = self.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
+                record.name = record.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
             year = str(datetime.now().year)
             folder_name = f"Importaciones - {year}"
 
             # Buscar o crear carpeta principal
-            parent_folder = self.env['documents.document'].search([
+            parent_folder = record.env['documents.document'].search([
                 ('name', '=', folder_name),
                 ('folder_id', '=', False)
             ], limit=1)
             if not parent_folder:
-                parent_folder = self.env['documents.document'].create({
+                parent_folder = record.env['documents.document'].create({
                     'name': folder_name,
                     'company_id': record.company_id.id,
                     'type': 'folder'
                 })
 
             # Buscar o crear subcarpeta para la importación
-            subfolder = self.env['documents.document'].search([
+            subfolder = record.env['documents.document'].search([
                 ('name', '=', record.name),
                 ('folder_id', '=', parent_folder.id)
             ], limit=1)
             if not subfolder:
-                subfolder = self.env['documents.document'].create({
+                subfolder = record.env['documents.document'].create({
                     'name': record.name,
                     'folder_id': parent_folder.id,
                     'company_id': record.company_id.id,
@@ -195,8 +193,44 @@ class PurchaseImport(models.Model):
             # Asignar carpeta primero
             record.document_folder_id = subfolder.id
 
-            # Luego actualizar estado
+            # Validar líneas válidas de producto
+            valid_lines = record.import_line_ids.filtered(lambda l: l.product_id and l.product_qty > 0)
+            if not valid_lines:
+                raise UserError(_("No hay líneas de productos válidas para crear la recepción."))
+
+            # Crear recepción automáticamente
+            Picking = record.env['stock.picking']
+            StockMove = record.env['stock.move']
+
+            picking_type = record.picking_type_id or record.env.ref('stock.picking_type_in', raise_if_not_found=False)
+            if not picking_type:
+                raise UserError(_("No se encontró un tipo de operación de entrada válido."))
+
+            picking = Picking.create({
+                'partner_id': record.partner_id.id,
+                'picking_type_id': picking_type.id,
+                'location_id': picking_type.default_location_src_id.id,
+                'location_dest_id': picking_type.default_location_dest_id.id,
+                'origin': record.name,
+                'company_id': record.company_id.id,
+                'import_id': record.id,
+            })
+
+            for line in valid_lines:
+                StockMove.create({
+                    'name': line.product_id.display_name,
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': line.product_qty,
+                    'product_uom': line.product_id.uom_id.id,
+                    'location_id': picking.location_id.id,
+                    'location_dest_id': picking.location_dest_id.id,
+                    'picking_id': picking.id,
+                    'company_id': record.company_id.id,
+                })
+
+            # Marcar como confirmado
             record.state = 'confirmed'
+
 
 
     @api.model

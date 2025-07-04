@@ -19,7 +19,13 @@ class PurchaseImportWizardLine(models.TransientModel):
         for line in self:
             po = line.wizard_id.purchase_order_id
             pol = po.order_line.filtered(lambda l: l.product_id == line.product_id)
-            line.max_qty = pol.product_qty if pol else 0.0
+            if pol:
+                total_ordered = sum(pol.mapped('product_qty'))
+                total_received = sum(pol.mapped('qty_received'))
+                line.max_qty = max(0.0, total_ordered - total_received)
+            else:
+                line.max_qty = 0.0
+
 
     @api.constrains('product_qty')
     def _check_product_qty(self):
@@ -31,6 +37,6 @@ class PurchaseImportWizardLine(models.TransientModel):
                 )
         if errors:
             raise ValidationError(
-                "Algunos productos exceden la cantidad permitida por la orden de compra:\n\n" +
+                "Algunos productos exceden la cantidad pendiente por recibir según la orden de compra:\n\n" +
                 "\n".join(errors)
             )

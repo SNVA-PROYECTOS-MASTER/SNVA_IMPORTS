@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -12,6 +12,31 @@ class PurchaseOrder(models.Model):
         ('land', 'Land'),
         ('courier', 'Courier')
     ], string="Transport Type")
+    
+    
+    
+    @api.constrains('purchase_ids')
+    def _check_supplier_consistency_with_import(self):
+        for order in self:
+            for import_rec in order.purchase_ids:
+                if import_rec.partner_id and order.partner_id != import_rec.partner_id:
+                    raise ValidationError(
+                        "No se puede asignar esta orden de compra a una importación con un proveedor diferente."
+                    )
+
+    
+    def _create_picking(self):
+        # Evitar recepciones automáticas si es importación
+        importation_orders = self.filtered(lambda o: o.is_importation)
+        normal_orders = self - importation_orders
+
+        # Llama al método solo para las órdenes normales
+        if normal_orders:
+            return super(PurchaseOrder, normal_orders)._create_picking()
+
+        # Para órdenes de importación, no crear nada
+        return self.env['stock.picking']
+
 
     @api.model
     def create(self, vals):
@@ -43,11 +68,10 @@ class PurchaseOrder(models.Model):
 
         # Cancelar recepciones automáticas si es importación
         for order in self.filtered(lambda o: o.is_importation):
-            pickings = order.picking_ids.filtered(lambda p: p.state in ['draft', 'waiting', 'confirmed'])
-            pickings.action_cancel()
-
+            pickings = getattr(order, 'picking_ids', False)
+            if pickings:
+                pickings.filtered(lambda p: p.state in ['draft', 'waiting', 'confirmed']).action_cancel()
         return res
-
 
 
     def write(self, vals):

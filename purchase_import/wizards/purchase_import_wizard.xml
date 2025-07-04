@@ -5,7 +5,7 @@
         <field name="model">purchase.import.wizard</field>
         <field name="arch" type="xml">
             <form string="Select Products for Import">
-                <field name="allowed_purchase_ids" invisible="1"/>     
+                
                 <group>
                     <field name="import_id" readonly="1"/>
                     <field name="purchase_order_id"/>
@@ -13,7 +13,7 @@
                 <field name="line_ids">
                     <list editable="bottom">
                         <field name="product_id"/>
-                        <field name="product_qty"/>
+                        <field name="product_qty" help="Cantidad máxima permitida: [[ max_qty ]]"/>
                     </list>
                 </field>
                 <footer>

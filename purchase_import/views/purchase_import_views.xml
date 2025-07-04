@@ -43,14 +43,6 @@
                             <field name="picking_ids" widget="statinfo" string="Receipts"/>
                         </button>
 
-                        <button name="action_open_documents"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-folder-open"
-                                invisible = "state != 'confirmed'">
-                            <field name="document_folder_id" widget="statinfo" string="Documentos"/>
-                        </button>
-
                     </div>
                     <group col="2">
                         <!-- Left column -->

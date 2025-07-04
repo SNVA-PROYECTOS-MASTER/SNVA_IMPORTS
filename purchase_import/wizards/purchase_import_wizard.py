@@ -60,10 +60,11 @@ class PurchaseImportWizard(models.TransientModel):
             new_lines_data = []
 
             for line in self.purchase_order_id.order_line:
-                if line.product_id.id not in existing_product_ids:
+                pending_qty = max(line.product_qty - line.qty_received, 0.0)
+                if line.product_id.id not in existing_product_ids and pending_qty > 0:
                     new_lines_data.append({
                         'product_id': line.product_id.id,
-                        'product_qty': line.product_qty,
+                        'product_qty': pending_qty,
                         'wizard_id': self.id,  # requerido si quieres vínculo desde ya
                     })
 
