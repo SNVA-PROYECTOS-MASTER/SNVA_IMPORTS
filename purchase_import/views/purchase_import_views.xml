@@ -43,6 +43,12 @@
                             <field name="picking_ids" widget="statinfo" string="Receipts"/>
                         </button>
 
+                        <button name="action_set_to_draft"
+                            type="object"
+                            string="Set to Draft"
+                            class="btn-secondary"
+                            invisible = "state != 'draft'" />
+
                     </div>
                     <group col="2">
                         <!-- Left column -->

@@ -355,3 +355,10 @@ class PurchaseImport(models.Model):
             if record.state != 'draft':
                 raise UserError("No se puede eliminar líneas si la importación no está en estado Borrador.")
         return super().unlink()
+    
+    def action_set_to_draft(self):
+        for record in self:
+            if record.state != 'cancelled' and record.state != 'done':
+                record.state = 'draft'
+            else:
+                raise UserError("No puedes regresar a borrador desde el estado 'Hecho' o 'Cancelado'.")
