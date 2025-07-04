@@ -47,7 +47,8 @@ class PurchaseImportWizard(models.TransientModel):
                 'product_qty': line.product_qty,
             }
 
-            if self.purchase_order_id:
+            # ⚠️ Solo asociar con la OC si el producto viene de la OC
+            if self.purchase_order_id and line.product_id.id in self.purchase_order_id.order_line.mapped('product_id').ids:
                 vals['purchase_order_id'] = self.purchase_order_id.id
 
             self.env['purchase.import.line'].create(vals)

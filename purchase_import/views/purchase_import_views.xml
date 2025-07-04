@@ -21,7 +21,7 @@
                             type="object"
                             string="Add Products"
                             class="oe_highlight"
-                            invisible="purchase_ids == False "/>
+                            invisible="purchase_ids == False or state != 'draft'"/>
                 </header>
 
                 <!-- Form body -->
@@ -39,7 +39,7 @@
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-truck"
-                                invisible="">
+                                invisible = "state == 'draft'">
                             <field name="picking_ids" widget="statinfo" string="Receipts"/>
                         </button>
 

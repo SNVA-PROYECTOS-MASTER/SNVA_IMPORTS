@@ -18,6 +18,8 @@
                     <field name="purchase_ids" widget="statinfo" string="Imports"/>
                 </button>
             </xpath>
+
+                
         </field>
     </record>
 </odoo>
