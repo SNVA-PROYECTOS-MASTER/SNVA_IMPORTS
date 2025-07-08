@@ -12,6 +12,8 @@ class PurchaseImportWizard(models.TransientModel):
         compute='_compute_allowed_purchase_orders'
     )
     line_ids = fields.One2many('purchase.import.wizard.line', 'wizard_id', string='Products')
+    product_uom = fields.Many2one('uom.uom',  string="Unit of Measure")
+    price_unit = fields.Float(string="Unit Price")
     
     @api.depends('import_id')
     def _compute_allowed_purchase_orders(self):
@@ -66,6 +68,8 @@ class PurchaseImportWizard(models.TransientModel):
                     new_lines_data.append({
                         'product_id': line.product_id.id,
                         'product_qty': pending_qty,
+                        'product_uom': line.product_uom.id,
+                        'price_unit': line.price_unit,
                         'wizard_id': self.id,  # requerido si quieres vínculo desde ya
                     })
 
