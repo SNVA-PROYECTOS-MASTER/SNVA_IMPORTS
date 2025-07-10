@@ -12,8 +12,7 @@ class PurchaseImportWizard(models.TransientModel):
         compute='_compute_allowed_purchase_orders'
     )
     line_ids = fields.One2many('purchase.import.wizard.line', 'wizard_id', string='Products')
-    product_uom = fields.Many2one('uom.uom',  string="Unit of Measure")
-    price_unit = fields.Float(string="Unit Price")
+    
     
     @api.depends('import_id')
     def _compute_allowed_purchase_orders(self):
@@ -39,18 +38,23 @@ class PurchaseImportWizard(models.TransientModel):
         self.ensure_one()
 
         for line in self.line_ids:
-            # Ignorar líneas incompletas
             if not line.product_id or not line.product_qty:
                 continue
+
+            # Validar si el producto pertenece a la OC (cuando se selecciona)
+            belongs_to_po = False
+            if self.purchase_order_id:
+                belongs_to_po = line.product_id.id in self.purchase_order_id.order_line.mapped('product_id').ids
 
             vals = {
                 'import_id': self.import_id.id,
                 'product_id': line.product_id.id,
                 'product_qty': line.product_qty,
+                'product_uom': line.product_uom.id,
+                'price_unit': line.price_unit,
             }
 
-            # ⚠️ Solo asociar con la OC si el producto viene de la OC
-            if self.purchase_order_id and line.product_id.id in self.purchase_order_id.order_line.mapped('product_id').ids:
+            if belongs_to_po:
                 vals['purchase_order_id'] = self.purchase_order_id.id
 
             self.env['purchase.import.line'].create(vals)

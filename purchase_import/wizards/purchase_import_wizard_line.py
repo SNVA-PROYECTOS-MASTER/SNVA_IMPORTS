@@ -7,14 +7,32 @@ class PurchaseImportWizardLine(models.TransientModel):
     _description = 'Wizard Line for Import Products'
 
     wizard_id = fields.Many2one('purchase.import.wizard', ondelete='cascade')
-    product_id = fields.Many2one('product.product', string='Product')
+    product_id = fields.Many2one(
+        'product.product',
+        string='Product',
+        domain="[('id', 'in', allowed_product_ids)]"
+    )
     product_qty = fields.Float(string='Quantity', required=True)
     qty_received = fields.Float(string="Received" )
     product_uom = fields.Many2one('uom.uom',  string="Unit of Measure")
     price_unit = fields.Float(string="Unit Price")
     
-    
+    allowed_product_ids = fields.Many2many(
+        'product.product',
+        compute='_compute_allowed_products',
+        string='Allowed Products',
+        store=False
+    )
     max_qty = fields.Float(string="Max Qty", compute="_compute_max_qty")
+    
+    @api.depends('wizard_id.purchase_order_id')
+    def _compute_allowed_products(self):
+        for line in self:
+            po = line.wizard_id.purchase_order_id
+            if po:
+                line.allowed_product_ids = po.order_line.mapped('product_id')
+            else:
+                line.allowed_product_ids = [(5, 0, 0)]
 
     @api.depends('product_id')
     def _compute_max_qty(self):

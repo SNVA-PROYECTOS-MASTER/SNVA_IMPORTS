@@ -21,6 +21,7 @@ class PurchaseImportLine(models.Model):
         store=False
     )
     
+    product_uom = fields.Many2one('uom.uom',  string="Unit of Measure")
     @api.depends('import_id')
     def _compute_allowed_purchase_orders(self):
         for wizard in self:

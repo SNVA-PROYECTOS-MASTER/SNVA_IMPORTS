@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_import_form_inherit_landed_cost" model="ir.ui.view">
+        <field name="name">purchase.import.form.inherit.landed.cost</field>
+        <field name="model">purchase.import</field>
+        <field name="inherit_id" ref="purchase_import.view_purchase_import_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Landed Costs">
+                    <field name="landed_cost_ids" readonly="1">
+                        <tree>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="amount_total"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

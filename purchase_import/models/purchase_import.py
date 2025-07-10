@@ -86,6 +86,22 @@ class PurchaseImport(models.Model):
         tracking=True
     )
     
+    
+    landed_cost_ids = fields.One2many(
+        'stock.landed.cost', 'import_id',
+        string="Landed Costs"
+    )
+    def action_view_landed_costs(self):
+        self.ensure_one()
+        picking_ids = self.picking_ids.ids
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Landed Costs',
+            'res_model': 'stock.landed.cost',
+            'view_mode': 'list,form',
+            'domain': [('picking_ids', 'in', picking_ids)],
+        }
+        
     @api.constrains('purchase_ids')
     def _check_unique_supplier(self):
         for record in self:
@@ -138,86 +154,96 @@ class PurchaseImport(models.Model):
             'context': {'default_import_id': self.id}
         }
 
-    @api.model
-    def _get_year_folder(self, year):
-        # Buscar o crear carpeta "Imports/YYYY"
-        folder_name = f'Imports/{year}'
-        folder = self.env['documents.document'].search([('name', '=', folder_name)], limit=1)
-        if not folder:
-            folder = self.env['documents.document'].create({'name': folder_name})
-        return folder
-
     def action_confirm(self):
         for record in self:
             if record.state != 'draft':
                 raise UserError("Only draft imports can be confirmed.")
 
-            # Validación necesaria
             if not record.import_line_ids:
-                raise UserError("Debe agregar al menos un producto antes de confirmar la importación.")
+                raise UserError("You must add at least one product before confirming the import.")
 
             if record.name == 'New':
                 record.name = record.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
+            # Preparar carpetas
+            company = record.company_id
+            documents = record.env['documents.document']
             year = str(datetime.now().year)
-            folder_name = f"Importaciones - {year}"
 
-            # Buscar o crear carpeta principal
-            parent_folder = record.env['documents.document'].search([
-                ('name', '=', folder_name),
-                ('folder_id', '=', False)
+            # Carpeta raíz 'Importaciones' (única por empresa)
+            root_folder = documents.search([
+                ('name', '=', 'Importaciones'),
+                ('type', '=', 'folder'),
+                ('folder_id', '=', False),
+                ('company_id', '=', company.id),
+                ('owner_id', '=', 1)
             ], limit=1)
-            if not parent_folder:
-                parent_folder = record.env['documents.document'].create({
-                    'name': folder_name,
-                    'company_id': record.company_id.id,
-                    'type': 'folder'
+            if not root_folder:
+                root_folder = documents.create({
+                    'name': 'Importaciones',
+                    'type': 'folder',
+                    'company_id': company.id,
+                    
                 })
 
-            # Buscar o crear subcarpeta para la importación
-            subfolder = record.env['documents.document'].search([
+            # Carpeta del año actual
+            year_folder = documents.search([
+                ('name', '=', year),
+                ('type', '=', 'folder'),
+                ('folder_id', '=', root_folder.id),
+                ('company_id', '=', company.id),
+                
+            ], limit=1)
+            if not year_folder:
+                year_folder = documents.create({
+                    'name': year,
+                    'type': 'folder',
+                    'folder_id': root_folder.id,
+                    'company_id': company.id,
+                    'owner_id': self.env.user.id,
+                })
+
+            # Carpeta de la importación
+            import_folder = documents.search([
                 ('name', '=', record.name),
-                ('folder_id', '=', parent_folder.id)
+                ('type', '=', 'folder'),
+                ('folder_id', '=', year_folder.id),
+                ('company_id', '=', company.id),
             ], limit=1)
-            if not subfolder:
-                subfolder = record.env['documents.document'].create({
+            if not import_folder:
+                import_folder = documents.create({
                     'name': record.name,
-                    'folder_id': parent_folder.id,
-                    'company_id': record.company_id.id,
-                    'type': 'folder'
+                    'type': 'folder',
+                    'folder_id': year_folder.id,
+                    'company_id': company.id,
+                    'owner_id': self.env.user.id,
                 })
 
-            if not subfolder:
-                raise UserError("No se pudo crear la subcarpeta de documentos.")
+            # Asignar carpeta a la importación
+            record.document_folder_id = import_folder.id
 
-            # Asignar carpeta primero
-            record.document_folder_id = subfolder.id
-
-            # Validar líneas válidas de producto
+            # Validar líneas válidas
             valid_lines = record.import_line_ids.filtered(lambda l: l.product_id and l.product_qty > 0)
             if not valid_lines:
-                raise UserError(_("No hay líneas de productos válidas para crear la recepción."))
+                raise UserError("No valid product lines to create a picking.")
 
-            # Crear recepción automáticamente
-            Picking = record.env['stock.picking']
-            StockMove = record.env['stock.move']
-
+            # Crear recepción
             picking_type = record.picking_type_id or record.env.ref('stock.picking_type_in', raise_if_not_found=False)
             if not picking_type:
-                raise UserError(_("No se encontró un tipo de operación de entrada válido."))
+                raise UserError("No valid incoming picking type found.")
 
-            picking = Picking.create({
+            picking = record.env['stock.picking'].create({
                 'partner_id': record.partner_id.id,
                 'picking_type_id': picking_type.id,
                 'location_id': picking_type.default_location_src_id.id,
                 'location_dest_id': picking_type.default_location_dest_id.id,
                 'origin': record.name,
-                'company_id': record.company_id.id,
+                'company_id': company.id,
                 'import_id': record.id,
             })
 
             for line in valid_lines:
-                StockMove.create({
+                record.env['stock.move'].create({
                     'name': line.product_id.display_name,
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_qty,
@@ -225,9 +251,8 @@ class PurchaseImport(models.Model):
                     'location_id': picking.location_id.id,
                     'location_dest_id': picking.location_dest_id.id,
                     'picking_id': picking.id,
-                    'company_id': record.company_id.id,
+                    'company_id': company.id,
                 })
-
             # Marcar como confirmado
             record.state = 'confirmed'
 
@@ -358,7 +383,19 @@ class PurchaseImport(models.Model):
     
     def action_set_to_draft(self):
         for record in self:
-            if record.state != 'cancelled' and record.state != 'done':
-                record.state = 'draft'
-            else:
-                raise UserError("No puedes regresar a borrador desde el estado 'Hecho' o 'Cancelado'.")
+            if record.state != 'confirmed':
+                continue
+
+            # Buscar recepciones vinculadas
+            pickings = record.picking_ids
+
+            for picking in pickings:
+                if picking.state == 'done':
+                    raise UserError(_("You cannot reset to draft because a receipt has already been validated."))
+
+            # Eliminar recepciones no validadas
+            draft_pickings = pickings.filtered(lambda p: p.state != 'done')
+            draft_pickings.unlink()
+
+            # Revertir el estado
+            record.state = 'draft'
