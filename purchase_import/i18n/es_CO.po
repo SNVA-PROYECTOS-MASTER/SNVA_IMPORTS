@@ -606,3 +606,68 @@ msgstr "Línea del asistente para productos de importación"
 #: model:ir.model,name:purchase_import.model_purchase_import_wizard
 msgid "Wizard to Select Products for Import"
 msgstr "Asistente para seleccionar productos a importar"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__allowed_product_ids
+msgid "Allowed Products"
+msgstr "Productos permitidos"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
+msgid "Cantidad máxima permitida: [[ max_qty ]]"
+msgstr "Cantidad máxima permitida: [[ max_qty ]]"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_stock_picking__import_id
+msgid "Importación"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_stock_landed_cost__import_id
+msgid "Importation"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__incoterm_id
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__landed_cost_count
+msgid "Landed Cost Count"
+msgstr "Conteo de costo en destino"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Landed Costs"
+msgstr "Costos en destino"
+
+#. module: purchase_import
+#. odoo-python
+#: code:addons/purchase_import/models/purchase_import.py:0
+msgid "You cannot reset to draft because a receipt has already been validated."
+msgstr "No puedes restablecer a borrador porque ya se ha validado una recepción."
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Set to Draft"
+msgstr "Establecer a borrador"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__product_uom
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__product_uom
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
+msgid "Documentos"
+msgstr "Documentos"

@@ -53,8 +53,9 @@
                             type="object"
                             class="oe_stat_button"
                             icon="fa-dollar"
+                            invisible="not landed_cost_count"
                             >
-                        <field name="landed_cost_ids" widget="statinfo" string="Landed Costs"/>
+                        <field name="landed_cost_count" widget="statinfo" string="Landed Costs"/>
                     </button>
 
                     </div>

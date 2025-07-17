@@ -91,15 +91,39 @@ class PurchaseImport(models.Model):
         'stock.landed.cost', 'import_id',
         string="Landed Costs"
     )
+    
+    landed_cost_count = fields.Integer(
+        string="Landed Cost Count",
+        compute='_compute_landed_cost_count'
+    )
+
+    @api.depends('picking_ids')
+    def _compute_landed_cost_count(self):
+        for record in self:
+            landed_costs = self.env['stock.landed.cost'].search([
+                ('picking_ids', 'in', record.picking_ids.ids)
+            ])
+        record.landed_cost_count = len(landed_costs)
+    
     def action_view_landed_costs(self):
         self.ensure_one()
-        picking_ids = self.picking_ids.ids
+        # 1. Buscar recepciones vinculadas a esta importación
+        related_pickings = self.env['stock.picking'].search([
+            ('import_id', '=', self.id)
+        ])
+        
+        # 2. Buscar landed costs que tengan esas recepciones
+        landed_costs = self.env['stock.landed.cost'].search([
+            ('picking_ids', 'in', related_pickings.ids)
+        ])
+
         return {
             'type': 'ir.actions.act_window',
             'name': 'Landed Costs',
             'res_model': 'stock.landed.cost',
             'view_mode': 'list,form',
-            'domain': [('picking_ids', 'in', picking_ids)],
+            'domain': [('id', 'in', landed_costs.ids)],
+            'context': {'default_import_id': self.id}
         }
         
     @api.constrains('purchase_ids')
