@@ -368,13 +368,6 @@ class PurchaseImport(models.Model):
             'context': {'default_folder_id': self.document_folder_id.id},
         }
         
-        
-    # def write(self, vals):
-    #     for record in self:
-    #         if record.state != 'draft':
-    #             raise UserError("No puedes editar líneas de productos en una importación confirmada.")
-    #     return super().write(vals)
-
     def unlink(self):
         for record in self:
             if record.state != 'draft':

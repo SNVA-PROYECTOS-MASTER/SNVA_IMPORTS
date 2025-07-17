@@ -53,7 +53,7 @@
                             type="object"
                             class="oe_stat_button"
                             icon="fa-dollar"
-                            invisible = "landed_cost_ids == False">
+                            >
                         <field name="landed_cost_ids" widget="statinfo" string="Landed Costs"/>
                     </button>
 
@@ -64,6 +64,10 @@
                             <field name="name"/>
                             <field name="purchase_ids" widget="many2many_tags"/>
                             <field name="tracking_number"/>
+                            <group string="Shipping Details" col="2">
+                                <field name="currency_id"/>
+                                <field name="trm_value"/>
+                            </group>
                         </group>
 
                         <!-- Right column: logistics -->
@@ -81,10 +85,7 @@
                             <field name="picking_type_id"/>
                         </group>
 
-                        <group string="Shipping Details" col="2">
-                            <field name="currency_id"/>
-                            <field name="trm_value"/>
-                        </group>
+                        
                     </group>
 
                     <group>

@@ -294,7 +294,7 @@ msgstr "Es seguidor"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_order__is_importation
 msgid "Is Importation"
-msgstr "Es importación"
+msgstr "Compra internacional"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__transport_type__land
