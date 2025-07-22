@@ -53,7 +53,6 @@
                             type="object"
                             class="oe_stat_button"
                             icon="fa-dollar"
-                            invisible="not landed_cost_count"
                             >
                         <field name="landed_cost_count" widget="statinfo" string="Landed Costs"/>
                     </button>
@@ -61,21 +60,23 @@
                     </div>
                     <group col="2">
                         <!-- Left column -->
-                        <group>
-                            <field name="name"/>
-                            <field name="purchase_ids" widget="many2many_tags"/>
-                            <field name="tracking_number"/>
+                        <group col="1">
+                            <group>
+                                <field name="name" string='Reference'/>
+                                <field name="purchase_ids" string='Import Products' widget="many2many_tags"/>
+                                <field name="trading_contact_id"/>
+                                <field name="tracking_number" string="Traiding"/>
+                            </group>
                             <group string="Shipping Details" col="2">
                                 <field name="currency_id"/>
                                 <field name="trm_value"/>
+                                <field name="company_id" />
                             </group>
                         </group>
 
                         <!-- Right column: logistics -->
                         <group string="Logistics">
-                            <field name="company_id" />
                             <field name="bl_number"/>
-                            <field name="trading_contact_id"/>
                             <field name="transport_type"/>
                             <field name="incoterm_id"/>
                             <field name="origin_country_id"/>

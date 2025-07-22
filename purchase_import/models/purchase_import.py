@@ -99,7 +99,7 @@ class PurchaseImport(models.Model):
 
     @api.depends('picking_ids')
     def _compute_landed_cost_count(self):
-        for record in self:
+        for record in self: 
             landed_costs = self.env['stock.landed.cost'].search([
                 ('picking_ids', 'in', record.picking_ids.ids)
             ])
