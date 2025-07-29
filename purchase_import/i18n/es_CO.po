@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-01 16:51+0000\n"
-"PO-Revision-Date: 2025-07-01 16:51+0000\n"
+"POT-Creation-Date: 2025-07-29 13:11+0000\n"
+"PO-Revision-Date: 2025-07-29 13:11+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -57,6 +57,12 @@ msgid "Air"
 msgstr "Aéreo"
 
 #. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__allowed_product_ids
+msgid "Allowed Products"
+msgstr "Productos permitidos"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__allowed_purchase_ids
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__allowed_purchase_ids
 msgid "Allowed Purchase"
 msgstr "Compra Permitida"
@@ -95,6 +101,11 @@ msgstr "Cancelar"
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__cancelled
 msgid "Cancelled"
 msgstr "Cancelado"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
+msgid "Cantidad máxima permitida: [[ max_qty ]]"
+msgstr "Cantidad máxima permitida: [[ max_qty ]]"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__company_id
@@ -178,7 +189,6 @@ msgid "Document List"
 msgstr "Lista de Documentos"
 
 #. module: purchase_import
-#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
 msgid "Documentos"
 msgstr "Documentos"
@@ -255,12 +265,18 @@ msgstr "Importación"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__import_line_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
 msgid "Import Products"
 msgstr "Productos de importación"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_stock_picking__import_id
 msgid "Importación"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_stock_landed_cost__import_id
+msgid "Importation"
 msgstr "Importación"
 
 #. module: purchase_import
@@ -301,6 +317,17 @@ msgstr "Compra internacional"
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_order__transport_type__land
 msgid "Land"
 msgstr "Terrestre"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__landed_cost_count
+msgid "Landed Cost Count"
+msgstr "Conteo de costo en destino"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__landed_cost_ids
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Landed Costs"
+msgstr "Costos en destino"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__write_uid
@@ -500,6 +527,7 @@ msgstr "Recibido"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__name
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
 msgid "Reference"
 msgstr "Referencia"
 
@@ -517,6 +545,11 @@ msgstr "Error de entrega por SMS"
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
 msgid "Select Products for Import"
 msgstr "Seleccionar productos para importar"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Set to Draft"
+msgstr "Establecer a borrador"
 
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
@@ -542,6 +575,11 @@ msgstr ""
 "Planificado: Actividades futuras."
 
 #. module: purchase_import
+#: model:ir.model,name:purchase_import.model_stock_landed_cost
+msgid "Stock Landed Cost"
+msgstr "Costo en destino de existencias"
+
+#. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__partner_id
 msgid "Supplier/Agent"
 msgstr "Proveedor / Agente"
@@ -553,18 +591,19 @@ msgstr "TRM"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__tracking_number
-msgid "Tracking Number"
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trading_contact_id
+msgid "Trading Contact"
 msgstr "Número de seguimiento"
 
 #. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trading_contact_id
-msgid "Trading Contact"
-msgstr "Proveedor"
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Traiding"
+msgstr ""
 
 #. module: purchase_import
 #: model:ir.model,name:purchase_import.model_stock_picking
 msgid "Transfer"
-msgstr "Transferencia"
+msgstr "Transferir "
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__transport_type
@@ -579,8 +618,15 @@ msgstr "Tipo de actividad de excepción registrada."
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__price_unit
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__price_unit
 msgid "Unit Price"
 msgstr "Precio unitario"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__product_uom
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__product_uom
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__website_message_ids
@@ -608,66 +654,9 @@ msgid "Wizard to Select Products for Import"
 msgstr "Asistente para seleccionar productos a importar"
 
 #. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__allowed_product_ids
-msgid "Allowed Products"
-msgstr "Productos permitidos"
-
-#. module: purchase_import
-#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
-msgid "Cantidad máxima permitida: [[ max_qty ]]"
-msgstr "Cantidad máxima permitida: [[ max_qty ]]"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__id
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__id
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__id
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__id
-msgid "ID"
-msgstr "ID"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_stock_picking__import_id
-msgid "Importación"
-msgstr "Importación"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_stock_landed_cost__import_id
-msgid "Importation"
-msgstr "Importación"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__incoterm_id
-msgid "Incoterm"
-msgstr "Incoterm"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__landed_cost_count
-msgid "Landed Cost Count"
-msgstr "Conteo de costo en destino"
-
-#. module: purchase_import
-#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
-msgid "Landed Costs"
-msgstr "Costos en destino"
-
-#. module: purchase_import
 #. odoo-python
 #: code:addons/purchase_import/models/purchase_import.py:0
-msgid "You cannot reset to draft because a receipt has already been validated."
-msgstr "No puedes restablecer a borrador porque ya se ha validado una recepción."
-
-#. module: purchase_import
-#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
-msgid "Set to Draft"
-msgstr "Establecer a borrador"
-
-#. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__product_uom
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__product_uom
-msgid "Unit of Measure"
-msgstr "Unidad de medida"
-
-#. module: purchase_import
-#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
-msgid "Documentos"
-msgstr "Documentos"
+msgid ""
+"You cannot reset to draft because a receipt has already been validated."
+msgstr ""
+"No puedes restablecer a borrador porque ya se ha validado una recepción."

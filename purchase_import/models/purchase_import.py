@@ -50,7 +50,7 @@ class PurchaseImport(models.Model):
     incoterm_id = fields.Many2one('account.incoterms', string="Incoterm")
     #carrier_id = fields.Many2one('delivery.carrier', string="Carrier")
 
-    tracking_number = fields.Char(string="Tracking Number")
+    tracking_number = fields.Many2one('res.partner', string="Trading Contact", domain="[('is_company', '=', False)]", tracking=True)
 
     notes = fields.Text(string="Internal Notes")
 
