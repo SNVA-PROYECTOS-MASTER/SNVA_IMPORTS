@@ -21,6 +21,8 @@
         'views/purchase_import_views.xml',
         'views/purchase_order_views.xml',
         'views/purchase_import_line_views.xml',
+        'views/product_template_views.xml',
+        'views/purchase_order_line.xml',
         'wizards/purchase_import_wizard.xml',
     ],
     
