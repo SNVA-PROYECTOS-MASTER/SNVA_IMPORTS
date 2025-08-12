@@ -66,7 +66,7 @@
                                 <field name="purchase_ids" string='Import Products' widget="many2many_tags"/>
                                 <field name="trading_contact_id"/>
                                 <field name="tracking_number" string="Traiding"/>
-                                <field name="forwarder" string="forwarder"/>
+                                <field name="forwarder" string="Forwarder"/>
                             </group>
                             <group string="Shipping Details" col="2">
                                 <field name="currency_id"/>

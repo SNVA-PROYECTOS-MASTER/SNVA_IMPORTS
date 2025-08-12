@@ -59,7 +59,7 @@ class PurchaseImport(models.Model):
         'import_id',
         string='Import Products'
     )
-    forwarder = fields.Char(string="forwarder", tracking=True)
+    forwarder = fields.Many2one('res.partner', string="Forwarder" , domain="[('is_company', '=', False)]", tracking=True)
     bl_number = fields.Char(string="BL Number", tracking=True)
     #Trading - contacto
     # Moneda de la importación
