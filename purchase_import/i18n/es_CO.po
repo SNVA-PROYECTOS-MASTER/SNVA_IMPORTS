@@ -660,3 +660,74 @@ msgid ""
 "You cannot reset to draft because a receipt has already been validated."
 msgstr ""
 "No puedes restablecer a borrador porque ya se ha validado una recepción."
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
+msgid "Cantidad máxima permitida: [[ max_qty ]]"
+msgstr "Cantidad máxima permitida: [[ max_qty ]]"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_order_line__supplier_description
+#: model_terms:ir.ui.view,arch_db:purchase_import.purchase_order_form_inherit_supplierdesc
+msgid "Descripción Proveedor"
+msgstr "Descripción del proveedor"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_order_line__number_part
+#: model_terms:ir.ui.view,arch_db:purchase_import.purchase_order_form_inherit_supplierdesc
+msgid "Number part"
+msgstr "Número de parte"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_product_supplierinfo__description_import
+msgid "Description"
+msgstr "Descripción"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
+msgid "Documentos"
+msgstr "Documentos"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__forwarder
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Forwarder"
+msgstr "Transportista"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__id
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_stock_picking__import_id
+msgid "Importación"
+msgstr "Importación"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__incoterm_id
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_product_supplierinfo__number_part
+msgid "Number part"
+msgstr "Número de parte"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trm_value
+msgid "TRM"
+msgstr "TRM"
+
+#. module: purchase_import
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__trading_contact_id
+msgid "Trading Contact"
+msgstr "Contacto comercial"
+
+#. module: purchase_import
+#: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
+msgid "Traiding"
+msgstr "Comercio"

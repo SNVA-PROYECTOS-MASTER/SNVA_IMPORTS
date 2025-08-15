@@ -3,4 +3,5 @@ from odoo import models, fields
 class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'
 
-    description_import = fields.Char(string="Descripción")
+    description_import = fields.Char(string="Description")
+    number_part = fields.Char(string="Number part")
