@@ -39,4 +39,4 @@ class PurchaseOrderLine(models.Model):
                 ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
                 ('partner_id', '=', line.order_id.partner_id.id)
             ], limit=1)
-            line.number_part = number_part.description_import if number_part else ''
+            line.number_part = number_part.number_part if number_part else ''
