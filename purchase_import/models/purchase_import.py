@@ -179,146 +179,122 @@ class PurchaseImport(models.Model):
         }
 
     def action_confirm(self):
-        """Confirma la importación: crea/ubica el contenedor de documentos en Empresa
-        (workspace en v18 o folder 'documents.document' en fallback), genera picking y confirma."""
+        """
+        Confirma la importación:
+        1) Valida precondiciones y asigna secuencia si aplica.
+        2) Garantiza jerarquía de Documentos (Empresa → Importaciones → Año).
+        3) Renombra y mueve la carpeta TEMP a su ubicación definitiva sin perder archivos.
+        4) Crea el picking de recepción y sus movimientos.
+        5) Cambia estado a 'confirmed'.
+
+        Notas:
+        - Este método asume integración con *Documents* usando `documents.document` como
+        carpetas (Community o fallback). Si usas Enterprise con Workspaces, adapta
+        a `documents.workspace` + `workspace_id`.
+        - Para evitar que los documentos aparezcan en "Mi unidad" de usuarios normales,
+        se usa `owner_id = base.user_root`.
+        """
         for record in self:
+            # ------------------------------------------------------------
+            # (0) Validaciones mínimas
+            # ------------------------------------------------------------
             if record.state != 'draft':
                 raise UserError(_("Only draft imports can be confirmed."))
 
-            if not record.import_line_ids:
+            valid_lines = record.import_line_ids.filtered(lambda l: l.product_id and l.product_qty > 0)
+            if not valid_lines:
                 raise UserError(_("You must add at least one product before confirming the import."))
 
-            # Asignar secuencia si sigue en 'New'
-            if record.name == 'New':
+            # Asignar código si está sin numerar
+            if record.name in ('New', '/', False):
                 record.name = record.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
             company = record.company_id
             year = str(datetime.now().year)
 
-            # ---------- Resolver a qué modelo apunta document_folder_id ----------
-            folder_field = record._fields['document_folder_id']
-            folder_comodel = getattr(folder_field, 'comodel_name', '')
-            IrModel = record.env['ir.model']
+            # ------------------------------------------------------------
+            # (1) Preparación de modelos/constantes para Documentos
+            # ------------------------------------------------------------
+            Doc = record.env['documents.document']
+            # Compatibilidad: en algunas versiones el campo padre es 'parent_id' y en otras 'folder_id'
+            parent_field = 'parent_id' if 'parent_id' in Doc._fields else 'folder_id'
+            owner_root = record.env.ref('base.user_root', raise_if_not_found=False) or record.env.user
 
-            # helpers para saber si existen campos padre en cada modelo
-            def _has_field(model_name, field_name):
-                mdl = IrModel._get(model_name)
-                return bool(mdl) and (field_name in record.env[model_name]._fields)
+            # ------------------------------------------------------------
+            # (2) Asegurar carpeta TEMP (por si el create no la creó)
+            # ------------------------------------------------------------
+            # Si no hay carpeta asignada aún, creamos una temporal ahora
+            if not record.document_folder_id:
+                temp_vals = {
+                    'name': f'TEMP_IMPORT_{record.id}',
+                    'type': 'folder',
+                    'company_id': company.id,
+                    'owner_id': owner_root.id,
+                }
+                record.document_folder_id = Doc.create(temp_vals).id
 
-            # ---------- RUTA A) Odoo 18 EE: documents.workspace ----------
-            if folder_comodel == 'documents.workspace':
-                if not IrModel._get('documents.workspace'):
-                    raise UserError(
-                        _("The model 'documents.workspace' is not available. "
-                          "Make sure the Documents app is installed (Enterprise).")
-                    )
-                Workspace = record.env['documents.workspace']
+            # ------------------------------------------------------------
+            # (3) Asegurar jerarquía Empresa → Importaciones → Año
+            #     (folders como documents.document; no usar workspace aquí)
+            # ------------------------------------------------------------
+            # Raíz "Importaciones"
+            root_domain = [
+                ('name', '=', 'Importaciones'),
+                ('type', '=', 'folder'),
+                ('company_id', '=', company.id),
+                (parent_field, '=', False),
+            ]
+            root_folder = Doc.search(root_domain, limit=1)
+            if not root_folder:
+                root_folder = Doc.create({
+                    'name': 'Importaciones',
+                    'type': 'folder',
+                    'company_id': company.id,
+                    'owner_id': owner_root.id,
+                })
 
-                # padre es 'parent_id' en workspaces
-                parent_field = 'parent_id' if _has_field('documents.workspace', 'parent_id') else False
-                if not parent_field:
-                    raise UserError(_("Workspace parent field not found."))
+            # Subcarpeta del año
+            year_domain = [
+                ('name', '=', year),
+                ('type', '=', 'folder'),
+                ('company_id', '=', company.id),
+                (parent_field, '=', root_folder.id),
+            ]
+            year_folder = Doc.search(year_domain, limit=1)
+            if not year_folder:
+                year_folder = Doc.create({
+                    'name': year,
+                    'type': 'folder',
+                    'company_id': company.id,
+                    'owner_id': owner_root.id,
+                    parent_field: root_folder.id,
+                })
 
-                # 1) Workspace raíz "Importaciones"
-                root_ws = Workspace.search([
-                    ('name', '=', 'Importaciones'),
-                    ('company_id', '=', company.id),
-                    ('%s' % parent_field, '=', False),
-                ], limit=1)
-                if not root_ws:
-                    root_ws = Workspace.create({
-                        'name': 'Importaciones',
-                        'company_id': company.id,
-                    })
-
-                # 2) Sub-workspace por año
-                year_ws = Workspace.search([
-                    ('name', '=', year),
-                    ('company_id', '=', company.id),
-                    (parent_field, '=', root_ws.id),
-                ], limit=1)
-                if not year_ws:
-                    year_ws = Workspace.create({
-                        'name': year,
-                        'company_id': company.id,
-                        parent_field: root_ws.id,
-                    })
-
-                # 3) Sub-workspace de la importación
-                import_ws = Workspace.search([
-                    ('name', '=', record.name),
-                    ('company_id', '=', company.id),
-                    (parent_field, '=', year_ws.id),
-                ], limit=1)
-                if not import_ws:
-                    import_ws = Workspace.create({
-                        'name': record.name,
-                        'company_id': company.id,
-                        parent_field: year_ws.id,
-                    })
-
-                # Guardar workspace
-                record.document_folder_id = import_ws.id
-
-            # ---------- RUTA B) Fallback: documents.document con type='folder' ----------
-            elif folder_comodel == 'documents.document':
-                if not IrModel._get('documents.document'):
-                    raise UserError(
-                        _("The model 'documents.document' is not available. "
-                          "Make sure the Documents app is installed.")
-                    )
-                Doc = record.env['documents.document']
-
-                # En este esquema, se usan documentos tipo folder y el campo padre suele ser 'folder_id'/'parent_id' según versión
-                # Detectamos cuál existe:
-                parent_field_opts = ['folder_id', 'parent_id']
-                parent_field = next((f for f in parent_field_opts if f in Doc._fields), None)
-                if not parent_field:
-                    raise UserError(_("No parent field found on documents.document."))
-
-                # Helper de búsqueda/creación de “carpetas” (documents.document con type='folder')
-                Doc = self.env['documents.document']
-                
-
-                def _get_or_create_folder(name, parent):
-                    domain = [('name', '=', name), ('type', '=', 'folder'), ('company_id', '=', company.id)]
-                    if parent:
-                        domain.append((parent_field, '=', parent.id))
-                    else:
-                        domain.append((parent_field, '=', False))
-                    folder = Doc.search(domain, limit=1)
-                    if not folder:
-                        vals = {
-                            'name': name,
-                            'type': 'folder',
-                            'company_id': company.id,
-                            'owner_id': self.env.ref('base.user_root').id,   # <-- YA NO False
-                        }
-                        if parent:
-                            vals[parent_field] = parent.id
-                        folder = Doc.create(vals)
-                    return folder
-
-                # 1) Raíz "Importaciones"
-                root_folder = _get_or_create_folder('Importaciones', parent=None)
-                # 2) Año
-                year_folder = _get_or_create_folder(year, parent=root_folder)
-                # 3) Importación
-                import_folder = _get_or_create_folder(record.name, parent=year_folder)
-
-                # Guardar “carpeta” (documento tipo folder)
-                record.document_folder_id = import_folder.id
-
+            # ------------------------------------------------------------
+            # (4) Renombrar + mover la carpeta temporal a su destino final
+            #     IMPORTANTE: no tocamos los hijos; al mover/renombrar el padre,
+            #     los documentos que cuelgan de él se mantienen y "se mudan" con él.
+            # ------------------------------------------------------------
+            current_folder = record.document_folder_id  # documents.document (type='folder')
+            if current_folder:
+                current_folder.write({
+                    'name': record.name,         # renombrar TEMP_IMPORT_X → IMP0001 (p. ej.)
+                    parent_field: year_folder.id # reubicar bajo /Importaciones/<AÑO>/
+                })
             else:
-                raise UserError(
-                    _("Unsupported comodel on document_folder_id: %s") % (folder_comodel or 'N/A')
-                )
+                # Fallback defensivo (raro que ocurra si ya aseguramos (2))
+                current_folder = Doc.create({
+                    'name': record.name,
+                    'type': 'folder',
+                    'company_id': company.id,
+                    'owner_id': owner_root.id,
+                    parent_field: year_folder.id,
+                })
+                record.document_folder_id = current_folder.id
 
-            # ---------- Crear recepción (stock.picking) ----------
-            valid_lines = record.import_line_ids.filtered(lambda l: l.product_id and l.product_qty > 0)
-            if not valid_lines:
-                raise UserError(_("No valid product lines to create a picking."))
-
+            # ------------------------------------------------------------
+            # (5) Crear picking de recepción y movimientos
+            # ------------------------------------------------------------
             picking_type = record.picking_type_id or record.env.ref('stock.picking_type_in', raise_if_not_found=False)
             if not picking_type:
                 raise UserError(_("No valid incoming picking type found."))
@@ -345,13 +321,33 @@ class PurchaseImport(models.Model):
                     'company_id': company.id,
                 })
 
+            # ------------------------------------------------------------
+            # (6) Estado final
+            # ------------------------------------------------------------
             record.state = 'confirmed'
+
         return True
+
 
     @api.model
     def create(self, vals):
         vals['name'] = 'New'
-        return super().create(vals)
+        record = super().create(vals)
+    
+        # Crear carpeta temporal para documentos
+        Doc = self.env['documents.document']
+        root_user = self.env.ref('base.user_root')
+
+        temp_folder = Doc.create({
+            'name': 'TEMP_IMPORT_%s' % (record.id,),
+            'type': 'folder',
+            'company_id': record.company_id.id,
+            'owner_id': root_user.id,
+        })
+        record.document_folder_id = temp_folder.id
+
+        return record
+    
     
     def action_open_wizard(self):
         self.ensure_one()
