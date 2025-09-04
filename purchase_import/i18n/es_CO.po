@@ -1,3 +1,5 @@
+Here are the adjusted translations, with only the first word capitalized:
+
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # 	* purchase_import
@@ -18,7 +20,7 @@ msgstr ""
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_needaction
 msgid "Action Needed"
-msgstr "Acción Necesaria"
+msgstr "Acción necesaria"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_ids
@@ -28,27 +30,27 @@ msgstr "Actividades"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "Decoración de Excepción de Actividad"
+msgstr "Decoración de excepción de actividad"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_state
 msgid "Activity State"
-msgstr "Estado de Actividad"
+msgstr "Estado de actividad"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Icono de Tipo de Actividad"
+msgstr "Icono de tipo de actividad"
 
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
 msgid "Add Products"
-msgstr "Añadir Productos"
+msgstr "Añadir productos"
 
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_wizard_form
 msgid "Add to Import"
-msgstr "Añadir a Importación"
+msgstr "Añadir a importación"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__transport_type__air
@@ -65,17 +67,17 @@ msgstr "Productos permitidos"
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_line__allowed_purchase_ids
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__allowed_purchase_ids
 msgid "Allowed Purchase"
-msgstr "Compra Permitida"
+msgstr "Compra permitida"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__at_port
 msgid "At Port"
-msgstr "En Puerto"
+msgstr "En puerto"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__at_zf
 msgid "At Zona Franca"
-msgstr "En Zona Franca"
+msgstr "En zona franca"
 
 #. module: purchase_import
 #: model:ir.model,name:purchase_import.model_ir_attachment
@@ -85,7 +87,7 @@ msgstr "Archivo adjunto"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_attachment_count
 msgid "Attachment Count"
-msgstr "Conteo de Adjuntos"
+msgstr "Conteo de adjuntos"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__bl_number
@@ -125,7 +127,7 @@ msgstr "Confirmado"
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
 msgid "Contact image"
-msgstr "Imagen de Contacto"
+msgstr "Imagen de contacto"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__transport_type__courier
@@ -163,7 +165,7 @@ msgstr "Entregado"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__departure_date
 msgid "Departure Date"
-msgstr "Fecha de Salida"
+msgstr "Fecha de salida"
 
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__dispatched
@@ -176,17 +178,17 @@ msgstr "Despachado"
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard__display_name
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import_wizard_line__display_name
 msgid "Display Name"
-msgstr "Nombre a Mostrar"
+msgstr "Nombre a mostrar"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__document_folder_id
 msgid "Document Folder"
-msgstr "Carpeta de Documentos"
+msgstr "Carpeta de documentos"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__document_list
 msgid "Document List"
-msgstr "Lista de Documentos"
+msgstr "Lista de documentos"
 
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form_inherit_lines
@@ -206,7 +208,7 @@ msgstr "Borrador"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__arrival_date
 msgid "Estimated Arrival Date"
-msgstr "Fecha Estimada de Llegada"
+msgstr "Fecha estimada de llegada"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_follower_ids
@@ -216,7 +218,7 @@ msgstr "Seguidores"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Seguidores (Socios)"
+msgstr "Seguidores (socios)"
 
 #. module: purchase_import
 #: model:ir.model.fields,help:purchase_import.field_purchase_import__activity_type_icon
@@ -226,7 +228,7 @@ msgstr "Icono de Font Awesome, ej. fa-tasks"
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__has_message
 msgid "Has Message"
-msgstr "Tiene Mensaje"
+msgstr "Tiene mensaje"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__id
@@ -290,7 +292,7 @@ msgstr "Importaciones"
 #. module: purchase_import
 #: model:ir.model.fields.selection,name:purchase_import.selection__purchase_import__state__in_customs
 msgid "In Customs"
-msgstr "En Aduana"
+msgstr "En aduana"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__incoterm_id
@@ -303,7 +305,7 @@ msgid "Internal Notes"
 msgstr "Notas internas"
 
 #. module: purchase_import
-#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__message_is_follower
+#: model:ir.model.fields,field_description:purchase_import.field_purchase_import__is_follower
 msgid "Is Follower"
 msgstr "Es seguidor"
 
@@ -598,12 +600,12 @@ msgstr "Número de seguimiento"
 #. module: purchase_import
 #: model_terms:ir.ui.view,arch_db:purchase_import.view_purchase_import_form
 msgid "Traiding"
-msgstr ""
+msgstr "Comercio"
 
 #. module: purchase_import
 #: model:ir.model,name:purchase_import.model_stock_picking
 msgid "Transfer"
-msgstr "Transferir "
+msgstr "Transferir"
 
 #. module: purchase_import
 #: model:ir.model.fields,field_description:purchase_import.field_purchase_import__transport_type
