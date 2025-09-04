@@ -10,10 +10,10 @@ class PurchaseImport(models.Model):
     document_folder_id = fields.Many2one(
         'documents.document',
         string='Document Folder',
+        domain="[('type', '=', 'folder')]",
         readonly=True,
-        domain="[('id', '!=', False)]"
     )
-    
+        
     document_list = fields.One2many('documents.document',compute="_compute_document_list")
     
     
@@ -179,82 +179,149 @@ class PurchaseImport(models.Model):
         }
 
     def action_confirm(self):
+        """Confirma la importación: crea/ubica el contenedor de documentos en Empresa
+        (workspace en v18 o folder 'documents.document' en fallback), genera picking y confirma."""
         for record in self:
             if record.state != 'draft':
-                raise UserError("Only draft imports can be confirmed.")
+                raise UserError(_("Only draft imports can be confirmed."))
 
             if not record.import_line_ids:
-                raise UserError("You must add at least one product before confirming the import.")
+                raise UserError(_("You must add at least one product before confirming the import."))
 
+            # Asignar secuencia si sigue en 'New'
             if record.name == 'New':
                 record.name = record.env['ir.sequence'].next_by_code('purchase.import') or 'IMP'
 
-            # Preparar carpetas
             company = record.company_id
-            documents = record.env['documents.document']
             year = str(datetime.now().year)
 
-            # Carpeta raíz 'Importaciones' (única por empresa)
-            root_folder = documents.search([
-                ('name', '=', 'Importaciones'),
-                ('type', '=', 'folder'),
-                ('folder_id', '=', False),
-                ('company_id', '=', company.id),
-                ('owner_id', '=', 1)
-            ], limit=1)
-            if not root_folder:
-                root_folder = documents.create({
-                    'name': 'Importaciones',
-                    'type': 'folder',
-                    'company_id': company.id,
-                    
-                })
+            # ---------- Resolver a qué modelo apunta document_folder_id ----------
+            folder_field = record._fields['document_folder_id']
+            folder_comodel = getattr(folder_field, 'comodel_name', '')
+            IrModel = record.env['ir.model']
 
-            # Carpeta del año actual
-            year_folder = documents.search([
-                ('name', '=', year),
-                ('type', '=', 'folder'),
-                ('folder_id', '=', root_folder.id),
-                ('company_id', '=', company.id),
+            # helpers para saber si existen campos padre en cada modelo
+            def _has_field(model_name, field_name):
+                mdl = IrModel._get(model_name)
+                return bool(mdl) and (field_name in record.env[model_name]._fields)
+
+            # ---------- RUTA A) Odoo 18 EE: documents.workspace ----------
+            if folder_comodel == 'documents.workspace':
+                if not IrModel._get('documents.workspace'):
+                    raise UserError(
+                        _("The model 'documents.workspace' is not available. "
+                          "Make sure the Documents app is installed (Enterprise).")
+                    )
+                Workspace = record.env['documents.workspace']
+
+                # padre es 'parent_id' en workspaces
+                parent_field = 'parent_id' if _has_field('documents.workspace', 'parent_id') else False
+                if not parent_field:
+                    raise UserError(_("Workspace parent field not found."))
+
+                # 1) Workspace raíz "Importaciones"
+                root_ws = Workspace.search([
+                    ('name', '=', 'Importaciones'),
+                    ('company_id', '=', company.id),
+                    ('%s' % parent_field, '=', False),
+                ], limit=1)
+                if not root_ws:
+                    root_ws = Workspace.create({
+                        'name': 'Importaciones',
+                        'company_id': company.id,
+                    })
+
+                # 2) Sub-workspace por año
+                year_ws = Workspace.search([
+                    ('name', '=', year),
+                    ('company_id', '=', company.id),
+                    (parent_field, '=', root_ws.id),
+                ], limit=1)
+                if not year_ws:
+                    year_ws = Workspace.create({
+                        'name': year,
+                        'company_id': company.id,
+                        parent_field: root_ws.id,
+                    })
+
+                # 3) Sub-workspace de la importación
+                import_ws = Workspace.search([
+                    ('name', '=', record.name),
+                    ('company_id', '=', company.id),
+                    (parent_field, '=', year_ws.id),
+                ], limit=1)
+                if not import_ws:
+                    import_ws = Workspace.create({
+                        'name': record.name,
+                        'company_id': company.id,
+                        parent_field: year_ws.id,
+                    })
+
+                # Guardar workspace
+                record.document_folder_id = import_ws.id
+
+            # ---------- RUTA B) Fallback: documents.document con type='folder' ----------
+            elif folder_comodel == 'documents.document':
+                if not IrModel._get('documents.document'):
+                    raise UserError(
+                        _("The model 'documents.document' is not available. "
+                          "Make sure the Documents app is installed.")
+                    )
+                Doc = record.env['documents.document']
+
+                # En este esquema, se usan documentos tipo folder y el campo padre suele ser 'folder_id'/'parent_id' según versión
+                # Detectamos cuál existe:
+                parent_field_opts = ['folder_id', 'parent_id']
+                parent_field = next((f for f in parent_field_opts if f in Doc._fields), None)
+                if not parent_field:
+                    raise UserError(_("No parent field found on documents.document."))
+
+                # Helper de búsqueda/creación de “carpetas” (documents.document con type='folder')
+                Doc = self.env['documents.document']
                 
-            ], limit=1)
-            if not year_folder:
-                year_folder = documents.create({
-                    'name': year,
-                    'type': 'folder',
-                    'folder_id': root_folder.id,
-                    'company_id': company.id,
-                    'owner_id': self.env.user.id,
-                })
 
-            # Carpeta de la importación
-            import_folder = documents.search([
-                ('name', '=', record.name),
-                ('type', '=', 'folder'),
-                ('folder_id', '=', year_folder.id),
-                ('company_id', '=', company.id),
-            ], limit=1)
-            if not import_folder:
-                import_folder = documents.create({
-                    'name': record.name,
-                    'type': 'folder',
-                    'folder_id': year_folder.id,
-                    'company_id': company.id,
-                    'owner_id': self.env.user.id,
-                })
+                def _get_or_create_folder(name, parent):
+                    domain = [('name', '=', name), ('type', '=', 'folder'), ('company_id', '=', company.id)]
+                    if parent:
+                        domain.append((parent_field, '=', parent.id))
+                    else:
+                        domain.append((parent_field, '=', False))
+                    folder = Doc.search(domain, limit=1)
+                    if not folder:
+                        vals = {
+                            'name': name,
+                            'type': 'folder',
+                            'company_id': company.id,
+                            'owner_id': self.env.ref('base.user_root').id,   # <-- YA NO False
+                        }
+                        if parent:
+                            vals[parent_field] = parent.id
+                        folder = Doc.create(vals)
+                    return folder
 
-            # Asignar carpeta a la importación
-            record.document_folder_id = import_folder.id
+                # 1) Raíz "Importaciones"
+                root_folder = _get_or_create_folder('Importaciones', parent=None)
+                # 2) Año
+                year_folder = _get_or_create_folder(year, parent=root_folder)
+                # 3) Importación
+                import_folder = _get_or_create_folder(record.name, parent=year_folder)
 
-            # Validar líneas válidas
+                # Guardar “carpeta” (documento tipo folder)
+                record.document_folder_id = import_folder.id
+
+            else:
+                raise UserError(
+                    _("Unsupported comodel on document_folder_id: %s") % (folder_comodel or 'N/A')
+                )
+
+            # ---------- Crear recepción (stock.picking) ----------
             valid_lines = record.import_line_ids.filtered(lambda l: l.product_id and l.product_qty > 0)
             if not valid_lines:
-                raise UserError("No valid product lines to create a picking.")
+                raise UserError(_("No valid product lines to create a picking."))
 
-            # Crear recepción
             picking_type = record.picking_type_id or record.env.ref('stock.picking_type_in', raise_if_not_found=False)
             if not picking_type:
-                raise UserError("No valid incoming picking type found.")
+                raise UserError(_("No valid incoming picking type found."))
 
             picking = record.env['stock.picking'].create({
                 'partner_id': record.partner_id.id,
@@ -277,10 +344,9 @@ class PurchaseImport(models.Model):
                     'picking_id': picking.id,
                     'company_id': company.id,
                 })
-            # Marcar como confirmado
+
             record.state = 'confirmed'
-
-
+        return True
 
     @api.model
     def create(self, vals):
@@ -319,14 +385,76 @@ class PurchaseImport(models.Model):
         string="Payments"
     )
 
-    @api.depends('purchase_ids.invoice_ids.payment_ids')
+    @api.depends(
+        'purchase_ids.invoice_ids',
+        'purchase_ids.invoice_ids.state',
+        'purchase_ids.invoice_ids.line_ids.matched_credit_ids',
+        'purchase_ids.invoice_ids.line_ids.matched_debit_ids',
+        'purchase_ids.invoice_ids.line_ids.full_reconcile_id',
+    )
     def _compute_payment_ids(self):
-        for record in self:
-            payments = self.env['account.payment']
-            for po in record.purchase_ids:
-                for invoice in po.invoice_ids:
-                    payments |= invoice.payment_ids
-            record.payment_ids = payments
+        Payment = self.env['account.payment']
+        MoveLine = self.env['account.move.line']
+
+        def _is_payable_account(acc):
+            """Compatibilidad v14–v18: detecta si la cuenta es de 'pagar a proveedores'."""
+            # v17/18: selection account_type (ej. 'liability_payable')
+            if 'account_type' in acc._fields:
+                return acc.account_type in ('liability_payable', 'payable')
+            # v14–v16: via user_type_id.type (ej. 'payable')
+            if 'user_type_id' in acc._fields and 'type' in acc.user_type_id._fields:
+                return acc.user_type_id.type in ('payable', 'liability_payable')
+            # último recurso: nombre/código (no recomendado, pero evita caída)
+            name = (acc.name or '').lower()
+            return 'por pagar' in name or 'payable' in name
+
+        for rec in self:
+            payments = Payment.browse()
+
+            invoices = rec.purchase_ids.mapped('invoice_ids').filtered(
+                lambda m: m.move_type in ('in_invoice', 'in_refund') and m.state != 'cancel'
+            )
+            if not invoices:
+                rec.payment_ids = payments
+                continue
+
+            # Ruta rápida si existe el m2m nativo (puede existir según edición/país)
+            if 'reconciled_invoice_ids' in Payment._fields:
+                payments |= Payment.search([('reconciled_invoice_ids', 'in', invoices.ids)])
+
+            # Seguimos por reconciliaciones contables (universal)
+            # 1) líneas de las facturas en cuentas 'payable'
+            payable_lines = invoices.mapped('line_ids').filtered(lambda l: _is_payable_account(l.account_id))
+
+            if payable_lines:
+                # 2) Asientos de pago vinculados por partial/full reconcile
+                matched_moves = (
+                    payable_lines.mapped('matched_credit_ids.credit_move_id.move_id') |
+                    payable_lines.mapped('matched_debit_ids.debit_move_id.move_id')
+                )
+                # incluir reconciliaciones completas (full)
+                full_recs = payable_lines.mapped('full_reconcile_id')
+                if full_recs:
+                    counterpart_lines = MoveLine.search([('full_reconcile_id', 'in', full_recs.ids)])
+                    matched_moves |= counterpart_lines.mapped('move_id')
+
+                if matched_moves:
+                    payments |= Payment.search([('move_id', 'in', matched_moves.ids)])
+
+            rec.payment_ids = payments
+
+            
+    def action_view_payments(self):
+        """Smart button para ver los pagos reunidos en payment_ids."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Payments'),
+            'res_model': 'account.payment',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', self.payment_ids.ids)],
+            'context': {'default_partner_type': 'supplier'},
+        }
     
     def action_create_reception(self):
         self.ensure_one()
