@@ -43,8 +43,8 @@ class PurchaseImport(models.Model):
     ], string="Transport Type", tracking=True)
     
     origin_country_id = fields.Many2one('res.country', string="Origin Country")
-    port_of_loading = fields.Char(string="Port of Loading")
-    port_of_discharge = fields.Char(string="Port of Discharge")
+    port_of_loading = fields.Many2one('res.country', string="Port of Loading")
+    port_of_discharge =fields.Many2one('res.country', string="Port of Discharge")
     departure_date = fields.Date(string="Departure Date")
     arrival_date = fields.Date(string="Estimated Arrival Date")
     incoterm_id = fields.Many2one('account.incoterms', string="Incoterm")
